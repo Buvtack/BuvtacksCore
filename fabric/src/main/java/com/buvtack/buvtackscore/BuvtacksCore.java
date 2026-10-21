@@ -1,6 +1,8 @@
 package com.buvtack.buvtackscore;
 
+import com.buvtack.buvtackscore.common.util.CommonModHelper;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class BuvtacksCore implements ModInitializer {
 
@@ -12,7 +14,8 @@ public class BuvtacksCore implements ModInitializer {
         // project.
 
         // Use Fabric to bootstrap the Common mod.
-        Constants.LOG.info("Hello Fabric world!");
         CommonClass.init();
+
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> CommonModHelper.SERVER = server);
     }
 }

@@ -3,21 +3,14 @@ package com.buvtack.buvtackscore.common.util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public class ModToolHelper {
 
@@ -32,7 +25,8 @@ public class ModToolHelper {
                 stack.is(ItemTags.PICKAXES) ||
                 stack.is(ItemTags.SHOVELS) ||
                 stack.is(ItemTags.SPEARS) ||
-                stack.is(Items.MACE);
+                stack.is(Items.MACE) ||
+                stack.is(ItemTags.SPEARS);
     }
 
     public static boolean isSword(ItemStack stack) {
@@ -74,7 +68,19 @@ public class ModToolHelper {
         return result;
     }
 
+    public static double totalAttributeOf(ItemStack stack, Holder<Attribute> attribute) {
+        return attributeOf(stack, attribute) + ModEnchantmentHelper.enchantAttributeOf(stack, attribute);
+    }
+
     public static int durabilityOf(ItemStack stack) {
         return stack.getMaxDamage() - stack.getDamageValue();
+    }
+
+    public static int maxDurabilityOf(ItemStack stack) {
+        return stack.getMaxDamage();
+    }
+
+    public static int usedDurabilityOf(ItemStack stack) {
+        return stack.getDamageValue();
     }
 }

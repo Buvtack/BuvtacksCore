@@ -2,6 +2,7 @@ package com.buvtack.buvtackscore.client.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.component.DataComponents;
@@ -146,26 +147,6 @@ public class ModHelper {
         return offhandItem.has(DataComponents.FOOD) || offhandItem.getItem() instanceof PotionItem;
     }
 
-    private static double getReach() {
-        return Minecraft.getInstance().gameMode.getPlayerMode() == GameType.SURVIVAL ? 4.5D : 5.2D;
-    }
-
-    public static HitResult getBlockInReach(double reachDistance) {
-        // 1. Get the camera vector (where the player is looking)
-        Player player = Minecraft.getInstance().player;
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 lookVec = player.getViewVector(1.0F);
-
-        // 2. Extend the vector by the reach distance
-        Vec3 endPos = eyePos.add(lookVec.x * reachDistance, lookVec.y * reachDistance, lookVec.z * reachDistance);
-
-        // 3. Perform the RayTrace
-        // ClipContext.Block.OUTLINE means it hits the visual boundary of the block
-        // Fluid.NONE means it ignores water/lava
-        return player.level().clip(new ClipContext(eyePos, endPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
-    }
-
-
     public static boolean isDrawingBow(InteractionHand hand) {
         Player player = Minecraft.getInstance().player;
         return isHolding(Items.BOW, hand) && player.isUsingItem() && player.getUsedItemHand() == hand;
@@ -223,5 +204,13 @@ public class ModHelper {
     public static boolean isLocalPlayer(Player player) {
         Player localPlayer = Minecraft.getInstance().player;
         return player.getUUID().equals(localPlayer.getUUID());
+    }
+
+    public static ClientLevel level() {
+        return Minecraft.getInstance().level;
+    }
+
+    public static long seed() {
+        return level().getServer().overworld().getSeed();
     }
 }
