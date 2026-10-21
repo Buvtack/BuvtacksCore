@@ -17,6 +17,9 @@
     "entrypoints": {
         "main": [
             "com.buvtack.buvtackscore.BuvtacksCore"
+        ],
+        "client": [
+            "com.buvtack.buvtackscore.BuvtacksCoreClient"
         ]
     },
     "mixins": [

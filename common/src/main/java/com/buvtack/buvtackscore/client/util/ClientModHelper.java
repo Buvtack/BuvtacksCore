@@ -1,11 +1,13 @@
 package com.buvtack.buvtackscore.client.util;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -14,18 +16,17 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.lwjgl.sdl.SDLMouse;
 
-public class ModHelper {
+public class ClientModHelper {
+
+    public static MinecraftServer SERVER = null;
 
     public static boolean isLeftClicking() {
         // Pass null via MemoryStack or explicit null arrays/pointers if permitted,
@@ -54,6 +55,10 @@ public class ModHelper {
 
     public static boolean isSinglePlayer() {
         return Minecraft.getInstance().getSingleplayerServer() != null;
+    }
+
+    public static boolean connected() {
+        return server() != null;
     }
 
     public static boolean isAdmin() {
@@ -212,5 +217,21 @@ public class ModHelper {
 
     public static long seed() {
         return level().getServer().overworld().getSeed();
+    }
+
+    public static MinecraftServer server() {
+        return SERVER;
+    }
+
+    public static Font font() {
+        return Minecraft.getInstance().font;
+    }
+
+    public static double mouseX() {
+        return Minecraft.getInstance().mouseHandler.xpos();
+    }
+
+    public static double mouseY() {
+        return Minecraft.getInstance().mouseHandler.ypos();
     }
 }

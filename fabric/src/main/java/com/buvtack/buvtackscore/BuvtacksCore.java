@@ -16,6 +16,13 @@ public class BuvtacksCore implements ModInitializer {
         // Use Fabric to bootstrap the Common mod.
         CommonClass.init();
 
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> CommonModHelper.SERVER = server);
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            Constants.LOG.info("Server starting on common side!!!");
+            CommonModHelper.SERVER = server;
+        });
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            Constants.LOG.info("Server stopped on common side!!!");
+            CommonModHelper.SERVER = null;
+        });
     }
 }
