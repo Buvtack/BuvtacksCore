@@ -6,6 +6,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -51,6 +52,12 @@ public class ModEnchantmentHelper {
     }
 
     public static ItemEnchantments enchantmentsOf(ItemStack stack) {
+        if (stack.is(Items.ENCHANTED_BOOK))
+            return stack.getOrDefault(
+                    DataComponents.STORED_ENCHANTMENTS,
+                    ItemEnchantments.EMPTY
+            );
+
         return stack.getOrDefault(
                 DataComponents.ENCHANTMENTS,
                 ItemEnchantments.EMPTY

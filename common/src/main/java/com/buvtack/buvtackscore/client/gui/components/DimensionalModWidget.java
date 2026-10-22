@@ -1,5 +1,6 @@
 package com.buvtack.buvtackscore.client.gui.components;
 
+import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
 
 public abstract class DimensionalModWidget extends ModWidget {
@@ -10,11 +11,14 @@ public abstract class DimensionalModWidget extends ModWidget {
     public int padding;
     public int margin;
 
+    public Alignment alignment;
+
     public DimensionalModWidget(int x, int y, int width, int height) {
         super(x, y);
         this.width = width;
         this.height = height;
         padding = 0;
+        alignment = Alignment.LEFT;
     }
 
     public boolean hovered() {
@@ -28,7 +32,7 @@ public abstract class DimensionalModWidget extends ModWidget {
     }
 
     public int getContentX() {
-        return x;
+        return alignment == Alignment.CENTER ? x - width / 2 : (alignment == Alignment.RIGHT ? x - width : x);
     }
 
     public int getContentY() {
@@ -36,19 +40,19 @@ public abstract class DimensionalModWidget extends ModWidget {
     }
 
     public int getPaddedX() {
-        return x - padding;
+        return getContentX() - padding;
     }
 
     public int getPaddedY() {
-        return y - padding;
+        return getContentY() - padding;
     }
 
     public int getMarginedX() {
-        return x - padding - margin;
+        return getPaddedX() - margin;
     }
 
     public int getMarginedY() {
-        return y - padding - margin;
+        return getPaddedY() - margin;
     }
 
     public int getContentWidth() {
@@ -60,11 +64,11 @@ public abstract class DimensionalModWidget extends ModWidget {
     }
 
     public int getPaddedWidth() {
-        return width + padding * 2;
+        return getContentWidth() + padding * 2;
     }
 
     public int getPaddedHeight() {
-        return height + padding * 2;
+        return getContentHeight() + padding * 2;
     }
 
     public int getMarginedWidth() {
@@ -97,5 +101,29 @@ public abstract class DimensionalModWidget extends ModWidget {
 
     public int bottom() {
         return getPaddedY() + getPaddedHeight();
+    }
+
+    public int contentLeft() {
+        return getContentX();
+    }
+
+    public int contentRight() {
+        return contentLeft() + getContentWidth();
+    }
+
+    public int contentTop() {
+        return getContentY();
+    }
+
+    public int contentBottom() {
+        return contentTop() + getContentHeight();
+    }
+
+    protected int getXFromAlignment(Alignment alignment) {
+        return alignment == Alignment.CENTER ? centerX() : (alignment == Alignment.RIGHT ? getContentX() - getContentWidth() : getContentX());
+    }
+
+    protected int getXFromAlignmentOf(int width, Alignment alignment) {
+        return alignment == Alignment.CENTER ? centerX() : (alignment == Alignment.RIGHT ? contentRight() - width : contentLeft());
     }
 }

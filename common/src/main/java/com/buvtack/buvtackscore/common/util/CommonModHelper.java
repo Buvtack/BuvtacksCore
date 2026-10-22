@@ -63,7 +63,7 @@ public class CommonModHelper {
     }
 
     public static void addItemToPlayer(Player player, Item item, int amount) {
-        player.getInventory().add(new ItemStack(item, amount));
+        player.addItem(new ItemStack(item, amount));
         player.containerMenu.broadcastChanges();
         player.inventoryMenu.broadcastChanges();
     }
@@ -79,6 +79,7 @@ public class CommonModHelper {
                 word = "";
             }
         }
+        list.add(word);
         return list.toArray(String[]::new);
     }
 

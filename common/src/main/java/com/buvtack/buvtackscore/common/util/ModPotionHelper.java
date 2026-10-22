@@ -16,6 +16,10 @@ public class ModPotionHelper {
         return stack.is(Items.POTION) || stack.is(Items.LINGERING_POTION) || stack.is(Items.SPLASH_POTION);
     }
 
+    public static boolean hasEffects(ItemStack stack) {
+        return stack.has(DataComponents.POTION_CONTENTS);
+    }
+
     public static boolean isEffectType(ItemStack stack, Holder<Potion>... potions) {
         if (!isPotion(stack))
             return false;
@@ -38,13 +42,13 @@ public class ModPotionHelper {
 
     private static int getEffectLevel(PotionContents contents, Holder<MobEffect> effect) {
         if (contents == null)
-            return -1;
+            return 0;
 
         for (MobEffectInstance instance : contents.getAllEffects())
             if (instance.getEffect().is(effect))
                 return instance.getAmplifier() + 1;
 
-        return -1;
+        return 0;
     }
 
     public static int getEffectLevel(LivingEntity entity, Holder<MobEffect> effect) {

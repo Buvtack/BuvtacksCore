@@ -10,7 +10,6 @@ import net.minecraft.util.FormattedCharSequence;
 public class ModLabel extends DimensionalModWidget {
 
     public Component content;
-    private Alignment alignment;
 
     private ModLabel() {
         super(0, 0, 0, 0);
@@ -20,9 +19,8 @@ public class ModLabel extends DimensionalModWidget {
         super(x, y, 0, 0);
     }
 
-    @Override
-    public int getContentX() {
-        return alignment == Alignment.CENTER ? x - width / 2 : (alignment == Alignment.RIGHT ? x - width : x);
+    public void alignment(Alignment alignment) {
+        this.alignment = alignment;
     }
 
     public static Builder builder() {
@@ -45,11 +43,10 @@ public class ModLabel extends DimensionalModWidget {
 
         public Builder content(Component content) {
             label.renderTasks.addTask(DefaultTaskNames.CONTENT, new ModTask<ModRenderAction>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
-                graphics.text(ClientModHelper.font(), (FormattedCharSequence) content, label.getContentX(), label.getContentY(), ModColors.WHITE.color);
+                graphics.text(ClientModHelper.font(), content, label.getContentX(), label.getContentY(), ModColors.WHITE.color);
+                label.width = ClientModHelper.font().width(content.getString());
+                label.height = ClientModHelper.font().lineHeight;
             }));
-
-            label.width = ClientModHelper.font().width(content.getString());
-            label.height = ClientModHelper.font().lineHeight;
 
             return this;
         }

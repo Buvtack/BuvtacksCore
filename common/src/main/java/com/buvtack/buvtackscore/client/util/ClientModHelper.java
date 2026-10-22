@@ -1,14 +1,19 @@
 package com.buvtack.buvtackscore.client.util;
 
+import com.buvtack.buvtackscore.client.gui.Alignment;
+import com.buvtack.buvtackscore.client.gui.components.DimensionalModWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +28,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.lwjgl.sdl.SDLMouse;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ClientModHelper {
 
@@ -233,5 +243,23 @@ public class ClientModHelper {
 
     public static double mouseY() {
         return Minecraft.getInstance().mouseHandler.ypos();
+    }
+
+    public static void playSound(SoundEvent sound, float pitch) {
+        Minecraft.getInstance().getSoundManager().play(
+                SimpleSoundInstance.forUI(sound, pitch)
+        );
+    }
+
+    public static Map<Alignment, List<DimensionalModWidget>> sortIntoAlignments(List<DimensionalModWidget> widgets) {
+        Map<Alignment, List<DimensionalModWidget>> result = new HashMap<>();
+
+        for (Alignment alignment : Alignment.values())
+            result.put(alignment, new ArrayList<>());
+
+        widgets.forEach(widget -> {
+            result.get(widget.alignment).add(widget);
+        });
+        return result;
     }
 }

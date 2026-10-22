@@ -1,6 +1,7 @@
 package com.buvtack.buvtackscore.client.gui.components;
 
 import com.buvtack.buvtackscore.client.graphics.ModColor;
+import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
@@ -18,6 +19,7 @@ public class ModIcon extends DimensionalModWidget {
     private ModIcon(int x, int y, int width, int height) {
         super(x, y, width, height);
         iconId = null;
+        alignment = Alignment.LEFT;
     }
 
     public void addBackground(ModColor color) {
@@ -100,6 +102,11 @@ public class ModIcon extends DimensionalModWidget {
 
         public Builder icon(Identifier iconId) {
             icon.setIcon(iconId);
+            return this;
+        }
+
+        public Builder alignment(Alignment alignment) {
+            icon.alignment = alignment;
             return this;
         }
 

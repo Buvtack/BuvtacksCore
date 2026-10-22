@@ -35,51 +35,51 @@ public class ModWorldHelper {
     }
 
     public static BlockHitResult raycast(LivingEntity entity, double reach) {
-        return raycast(entity, reach, false);
-    }
-
-    public static BlockHitResult raycast(LivingEntity entity, boolean includeFluid) {
-        return raycast(entity, blockReachOf(entity), includeFluid);
+        return raycast(entity, reach, ClipContext.Fluid.NONE);
     }
 
     public static BlockHitResult raycast(LivingEntity entity) {
-        return raycast(entity, blockReachOf(entity), false);
+        return raycast(entity, blockReachOf(entity), ClipContext.Fluid.NONE);
     }
 
-    public static BlockHitResult raycast(LivingEntity entity, double reach, boolean includeFluid) {
+    public static BlockHitResult raycast(LivingEntity entity, ClipContext.Fluid fluid) {
+        return raycast(entity, blockReachOf(entity), fluid);
+    }
+
+    public static BlockHitResult raycast(LivingEntity entity, double reach, ClipContext.Fluid fluid) {
         Vec3 eyePos = entity.getEyePosition(1.0F);
         Vec3 lookPos = entity.getViewVector(1.0F);
-        Vec3 endPos = eyePos.add(lookPos.x * reach, lookPos.y * reach, lookPos.z * reach);
+        Vec3 endPos = eyePos.add(lookPos.scale(reach));
 
         ClipContext context = new ClipContext(
                 eyePos,
                 endPos,
                 ClipContext.Block.OUTLINE,
-                includeFluid ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE,
+                fluid,
                 entity
         );
 
         return entity.level().clip(context);
     }
 
-    public static BlockPos getBlockPosInFrontOf(LivingEntity entity) {
-        BlockHitResult hit = raycast(entity);
+    public static BlockPos getBlockPosInFrontOf(LivingEntity entity, ClipContext.Fluid fluid) {
+        BlockHitResult hit = raycast(entity, fluid);
         if (hit.getType() == HitResult.Type.BLOCK)
             return hit.getBlockPos();
 
         return null;
     }
 
-    public static BlockState getBlockInFrontOf(LivingEntity entity) {
-        BlockPos pos = getBlockPosInFrontOf(entity);
+    public static BlockState getBlockInFrontOf(LivingEntity entity, ClipContext.Fluid fluid) {
+        BlockPos pos = getBlockPosInFrontOf(entity, fluid);
         if (pos != null)
             return entity.level().getBlockState(pos);
 
         return null;
     }
 
-    public static boolean hasBlockInReach(LivingEntity entity, Identifier blockId) {
-        BlockPos pos = getBlockPosInFrontOf(entity);
+    public static boolean hasBlockInReach(LivingEntity entity, Identifier blockId, ClipContext.Fluid fluid) {
+        BlockPos pos = getBlockPosInFrontOf(entity, fluid);
         if (pos == null)
             return false;
 
@@ -87,7 +87,7 @@ public class ModWorldHelper {
         if (target == null)
             return false;
 
-        BlockState state = getBlockInFrontOf(entity);
+        BlockState state = getBlockInFrontOf(entity, fluid);
         if (state == null)
             return false;
 

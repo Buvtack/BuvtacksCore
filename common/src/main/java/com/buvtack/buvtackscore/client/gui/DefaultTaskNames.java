@@ -7,4 +7,6 @@ public class DefaultTaskNames {
     public static final String BACKGROUND = "background";
     public static final String BORDER = "border";
     public static final String FADE = "fade";
+
+    public static final String ONCLICK = "onClick";
 }

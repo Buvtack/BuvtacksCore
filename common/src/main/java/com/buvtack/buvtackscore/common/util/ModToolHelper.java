@@ -19,14 +19,12 @@ public class ModToolHelper {
     }
 
     public static boolean isTool(ItemStack stack) {
-        String registryName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
         return stack.is(ItemTags.AXES) ||
                 stack.is(ItemTags.HOES) ||
                 stack.is(ItemTags.PICKAXES) ||
                 stack.is(ItemTags.SHOVELS) ||
                 stack.is(ItemTags.SPEARS) ||
-                stack.is(Items.MACE) ||
-                stack.is(ItemTags.SPEARS);
+                stack.is(Items.MACE);
     }
 
     public static boolean isSword(ItemStack stack) {
