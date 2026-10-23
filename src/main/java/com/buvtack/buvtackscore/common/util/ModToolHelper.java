@@ -2,11 +2,11 @@ package com.buvtack.buvtackscore.common.util;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemTool;
 import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 
 import com.google.common.collect.Multimap;
 
