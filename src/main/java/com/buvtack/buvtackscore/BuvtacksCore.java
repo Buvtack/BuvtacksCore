@@ -11,7 +11,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 
-@Mod(modid = BuvtacksCore.MODID, version = Tags.VERSION, name = "BuvtacksCore", acceptedMinecraftVersions = "[1.7.10]")
+@Mod(modid = BuvtacksCore.MODID, version = "1.7.10.0.1", name = "BuvtacksCore", acceptedMinecraftVersions = "[1.7.10]")
 public class BuvtacksCore {
 
     public static final String MODID = "buvtackscore";
