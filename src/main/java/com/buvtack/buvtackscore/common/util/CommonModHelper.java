@@ -1,6 +1,8 @@
 package com.buvtack.buvtackscore.common.util;
 
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,8 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 
-import java.util.LinkedList;
-import java.util.List;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonModHelper {
 

@@ -1,8 +1,8 @@
 package com.buvtack.buvtackscore;
 
 import com.buvtack.buvtackscore.common.util.CommonModHelper;
+
 import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
 
 public class CommonProxy {
 

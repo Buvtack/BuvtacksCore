@@ -1,9 +1,10 @@
 package com.buvtack.buvtackscore.common.util;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.*;
+
+import com.google.common.collect.Multimap;
 
 public class ModToolHelper {
 
@@ -47,7 +48,8 @@ public class ModToolHelper {
         }
 
         // Add Sharpness enchantment bonus if present
-        int sharpnessLevel = ModEnchantmentHelper.getEnchantmentLevel(stack, net.minecraft.enchantment.Enchantment.sharpness.effectId);
+        int sharpnessLevel = ModEnchantmentHelper
+            .getEnchantmentLevel(stack, net.minecraft.enchantment.Enchantment.sharpness.effectId);
         if (sharpnessLevel > 0) {
             baseDamage += (1.25F * sharpnessLevel);
         }

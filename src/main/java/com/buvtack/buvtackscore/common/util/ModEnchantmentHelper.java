@@ -1,12 +1,13 @@
 package com.buvtack.buvtackscore.common.util;
 
+import java.util.Map;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 
-import java.util.Map;
-
 public class ModEnchantmentHelper {
+
     public static int getEnchantmentLevel(ItemStack stack, int enchantmentId) {
         if (stack == null) {
             return 0;

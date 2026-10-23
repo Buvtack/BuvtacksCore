@@ -1,12 +1,12 @@
 package com.buvtack.buvtackscore.common.util;
 
+import java.util.Collection;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-
-import java.util.Collection;
 
 public class ModPotionHelper {
 
@@ -23,7 +23,8 @@ public class ModPotionHelper {
             return false;
         }
         // In 1.7.10, potion effects on items are stored in NBT or can be retrieved via PotionHelper/Items
-        return Items.potionitem.getEffects(stack) != null && !Items.potionitem.getEffects(stack).isEmpty();
+        return Items.potionitem.getEffects(stack) != null && !Items.potionitem.getEffects(stack)
+            .isEmpty();
     }
 
     public static boolean isEffectType(ItemStack stack, Potion... potions) {

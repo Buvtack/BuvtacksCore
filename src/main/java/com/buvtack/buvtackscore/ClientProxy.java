@@ -1,10 +1,10 @@
 package com.buvtack.buvtackscore;
 
-import com.buvtack.buvtackscore.client.ClientEvents;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
+
+import com.buvtack.buvtackscore.client.ClientEvents;
+
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 
 public class ClientProxy extends CommonProxy {
 

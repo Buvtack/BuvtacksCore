@@ -1,11 +1,11 @@
 package com.buvtack.buvtackscore;
 
-import cpw.mods.fml.common.event.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.*;
 
 @Mod(modid = BuvtacksCore.MODID, version = Tags.VERSION, name = "BuvtacksCore", acceptedMinecraftVersions = "[1.7.10]")
 public class BuvtacksCore {
@@ -13,7 +13,9 @@ public class BuvtacksCore {
     public static final String MODID = "buvtackscore";
     public static final Logger LOG = LogManager.getLogger(MODID);
 
-    @SidedProxy(clientSide = "com.buvtack.buvtackscore.ClientProxy", serverSide = "com.buvtack.buvtackscore.CommonProxy")
+    @SidedProxy(
+        clientSide = "com.buvtack.buvtackscore.ClientProxy",
+        serverSide = "com.buvtack.buvtackscore.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
