@@ -4,7 +4,7 @@
 		"modid": "${modId}",
 		"name": "${modName}",
 		"description": "A shared utility, helper, and UI framework library",
-		"version": "1.7.10.0.1",
+		"version": "1.7.10.1",
 		"mcversion": "1.7.10",
 		"url": "https://www.curseforge.com/minecraft/mc-mods/buvtacks-core",
 		"updateUrl": "",

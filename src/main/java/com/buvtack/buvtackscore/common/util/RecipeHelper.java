@@ -13,23 +13,95 @@ public class RecipeHelper {
     }
 
     public static void addSwordRecipe(Item sword, Item material, Item stick) {
-        GameRegistry.addRecipe(new ItemStack(sword), "M", "M", "B", 'M', material, 'B', stick);
+        GameRegistry.addRecipe(new ItemStack(sword),
+            "M  ",
+            "M  ",
+            "B  ",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(sword),
+            " M ",
+            " M ",
+            " B ",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(sword),
+            "  M",
+            "  M",
+            "  B",
+            'M', material, 'B', stick);
     }
 
     public static void addAxeRecipe(Item axe, Item material, Item stick) {
-        GameRegistry.addRecipe(new ItemStack(axe), "MM", "MB", " B", 'M', material, 'B', stick);
+        GameRegistry.addRecipe(new ItemStack(axe),
+            "MM ",
+            "MB ",
+            " B ",
+            'M', material, 'B', stick);
 
-        GameRegistry.addRecipe(new ItemStack(axe), "MM", "BM", "B ", 'M', material, 'B', stick);
+        GameRegistry.addRecipe(new ItemStack(axe),
+            " MM",
+            " MB",
+            "  B",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(axe),
+            "MM ",
+            "BM ",
+            "B  ",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(axe),
+            " MM",
+            " BM",
+            " B ",
+            'M', material, 'B', stick);
     }
 
     public static void addShovelRecipe(Item shovel, Item material, Item stick) {
-        GameRegistry.addRecipe(new ItemStack(shovel), "M", "B", "B", 'M', material, 'B', stick);
+        GameRegistry.addRecipe(new ItemStack(shovel),
+            "M  ",
+            "B  ",
+            "B  ",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(shovel),
+            " M ",
+            " B ",
+            " B ",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(shovel),
+            "  M",
+            "  B",
+            "  B",
+            'M', material, 'B', stick);
     }
 
     public static void addHoeRecipe(Item hoe, Item material, Item stick) {
-        GameRegistry.addRecipe(new ItemStack(hoe), "MM", " B", " B", 'M', material, 'B', stick);
+        GameRegistry.addRecipe(new ItemStack(hoe),
+            "MM ",
+            " B ",
+            " B ",
+            'M', material, 'B', stick);
 
-        GameRegistry.addRecipe(new ItemStack(hoe), "MM", "B ", "B ", 'M', material, 'B', stick);
+        GameRegistry.addRecipe(new ItemStack(hoe),
+            " MM",
+            "  B",
+            "  B",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(hoe),
+            "MM ",
+            "B  ",
+            "B  ",
+            'M', material, 'B', stick);
+
+        GameRegistry.addRecipe(new ItemStack(hoe),
+            " MM",
+            " B ",
+            " B ",
+            'M', material, 'B', stick);
     }
 
     public static void addToolsetRecipe(Item pickaxe, Item sword, Item axe, Item shovel, Item hoe, Item material,
@@ -42,7 +114,17 @@ public class RecipeHelper {
     }
 
     public static void addHelmetRecipe(Item helmet, Item material) {
-        GameRegistry.addRecipe(new ItemStack(helmet), "MMM", "M M", 'M', material);
+        GameRegistry.addRecipe(new ItemStack(helmet),
+            "MMM",
+            "M M",
+            "   ",
+            'M', material);
+
+        GameRegistry.addRecipe(new ItemStack(helmet),
+            "   ",
+            "MMM",
+            "M M",
+            'M', material);
     }
 
     public static void addChestplateRecipe(Item chestplate, Item material) {
@@ -54,7 +136,17 @@ public class RecipeHelper {
     }
 
     public static void addBootsRecipe(Item boots, Item material) {
-        GameRegistry.addRecipe(new ItemStack(boots), "M M", "M M", 'M', material);
+        GameRegistry.addRecipe(new ItemStack(boots),
+            "M M",
+            "M M",
+            "   ",
+            'M', material);
+
+        GameRegistry.addRecipe(new ItemStack(boots),
+            "   ",
+            "M M",
+            "M M",
+            'M', material);
     }
 
     public static void addArmorRecipe(Item helmet, Item chestplate, Item leggings, Item boots, Item material) {
@@ -77,15 +169,90 @@ public class RecipeHelper {
     }
 
     public static void addSmallBlockRecipe(Block block, Item ingot) {
-        GameRegistry.addRecipe(new ItemStack(block), "II", "II", 'I', ingot);
+        GameRegistry.addRecipe(new ItemStack(block),
+            "II ",
+            "II ",
+            "   ",
+            'I', ingot);
+
+        GameRegistry.addRecipe(new ItemStack(block),
+            " II",
+            " II",
+            "   ",
+            'I', ingot);
+
+        GameRegistry.addRecipe(new ItemStack(block),
+            "   ",
+            "II ",
+            "II ",
+            'I', ingot);
+
+        GameRegistry.addRecipe(new ItemStack(block),
+            "   ",
+            " II",
+            " II",
+            'I', ingot);
 
         GameRegistry.addShapelessRecipe(new ItemStack(ingot, 4), block);
     }
 
     public static void addSlabRecipe(Block slab, Block material, boolean addInverse) {
-        GameRegistry.addRecipe(new ItemStack(slab, 6), "MMM", 'M', material);
+        GameRegistry.addRecipe(new ItemStack(slab, 6),
+            "MMM",
+            "   ",
+            "   ",
+            'M', material);
 
-        if (addInverse) GameRegistry.addRecipe(new ItemStack(material), "S", "S", 'S', slab);
+        GameRegistry.addRecipe(new ItemStack(slab, 6),
+            "   ",
+            "MMM",
+            "   ",
+            'M', material);
+
+        GameRegistry.addRecipe(new ItemStack(slab, 6),
+            "   ",
+            "   ",
+            "MMM",
+            'M', material);
+
+        if (addInverse) {
+            GameRegistry.addRecipe(new ItemStack(material),
+                "   ",
+                "S  ",
+                "S  ",
+                'S', slab);
+
+
+            GameRegistry.addRecipe(new ItemStack(material),
+                "   ",
+                " S ",
+                " S ",
+                'S', slab);
+
+            GameRegistry.addRecipe(new ItemStack(material),
+                "   ",
+                "  S",
+                "  S",
+                'S', slab);
+
+            GameRegistry.addRecipe(new ItemStack(material),
+                "S  ",
+                "S  ",
+                "   ",
+                'S', slab);
+
+            GameRegistry.addRecipe(new ItemStack(material),
+                " S ",
+                " S ",
+                "   ",
+                'S', slab);
+
+            GameRegistry.addRecipe(new ItemStack(material),
+                "  S",
+                "  S",
+                "   ",
+                'S', slab);
+        }
     }
 
     public static void addStairsRecipe(Block stairs, Block material, int amount) {
@@ -95,7 +262,17 @@ public class RecipeHelper {
     }
 
     public static void addWallRecipe(Block wall, Block material, int amount) {
-        GameRegistry.addRecipe(new ItemStack(wall, amount), "MMM", "MMM", 'M', material);
+        GameRegistry.addRecipe(new ItemStack(wall, amount),
+            "MMM",
+            "MMM",
+            "   ",
+            'M', material);
+
+        GameRegistry.addRecipe(new ItemStack(wall, amount),
+            "   ",
+            "MMM",
+            "MMM",
+            'M', material);
     }
 
     public static void addSurroundRecipe(Item outline, Item core, Item result, int amount) {
@@ -115,10 +292,67 @@ public class RecipeHelper {
     }
 
     public static void addRodRecipe(Item rod, int amount, Item material) {
-        GameRegistry.addRecipe(new ItemStack(rod, amount), "M", "M", 'M', material);
+        GameRegistry.addRecipe(new ItemStack(rod, amount),
+            "   ",
+            "S  ",
+            "S  ",
+            'S', material);
+
+
+        GameRegistry.addRecipe(new ItemStack(rod, amount),
+            "   ",
+            " S ",
+            " S ",
+            'S', material);
+
+        GameRegistry.addRecipe(new ItemStack(rod, amount),
+            "   ",
+            "  S",
+            "  S",
+            'S', material);
+
+        GameRegistry.addRecipe(new ItemStack(rod, amount),
+            "S  ",
+            "S  ",
+            "   ",
+            'S', material);
+
+        GameRegistry.addRecipe(new ItemStack(rod, amount),
+            " S ",
+            " S ",
+            "   ",
+            'S', material);
+
+        GameRegistry.addRecipe(new ItemStack(rod, amount),
+            "  S",
+            "  S",
+            "   ",
+            'S', material);
     }
 
     public static void addPlateRecipe(Item plate, Item material) {
-        GameRegistry.addRecipe(new ItemStack(plate), "MM", "MM", 'M', material);
+        GameRegistry.addRecipe(new ItemStack(plate),
+            "II ",
+            "II ",
+            "   ",
+            'I', material);
+
+        GameRegistry.addRecipe(new ItemStack(plate),
+            " II",
+            " II",
+            "   ",
+            'I', material);
+
+        GameRegistry.addRecipe(new ItemStack(plate),
+            "   ",
+            "II ",
+            "II ",
+            'I', material);
+
+        GameRegistry.addRecipe(new ItemStack(plate),
+            "   ",
+            " II",
+            " II",
+            'I', material);
     }
 }
