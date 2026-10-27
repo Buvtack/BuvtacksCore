@@ -5,18 +5,28 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.core.jmx.Server;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class ModWorldHelper {
+
+    private static final String USE_WITHOUT_ITEM = resolveName();
 
     public static double blockReachOf(LivingEntity entity) {
         AttributeInstance reach = entity.getAttribute(Attributes.BLOCK_INTERACTION_RANGE);
@@ -94,6 +104,10 @@ public class ModWorldHelper {
         return state.is(target);
     }
 
+    public static ServerLevel playerLevel(ServerPlayer player) {
+        return player.level();
+    }
+
     public static ServerLevel level(ResourceKey<Level> levelKey) {
         return CommonModHelper.server().getLevel(levelKey);
     }
@@ -112,5 +126,37 @@ public class ModWorldHelper {
 
     public static long seed() {
         return overworld().getSeed();
+    }
+
+    public static boolean isInteractableBlock(Level level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        boolean isBlockEntity = level.getBlockEntity(pos) != null;
+        boolean hasMenu = state.getMenuProvider(level, pos) != null;
+        boolean interactable = overridesUseWithoutItem(state);
+        return isBlockEntity || hasMenu || interactable;
+    }
+
+    private static String resolveName() {
+        for (Method m : BlockBehaviour.class.getDeclaredMethods()) {
+            if (m.getReturnType() == InteractionResult.class
+                    && Arrays.equals(m.getParameterTypes(),
+                    new Class<?>[]{BlockState.class, Level.class, BlockPos.class, Player.class, BlockHitResult.class})) {
+                return m.getName();
+            }
+        }
+        throw new IllegalStateException("useWithoutItem not found");
+    }
+
+    private static boolean overridesUseWithoutItem(BlockState state) {
+        for (Class<?> c = state.getBlock().getClass(); c != null && c != BlockBehaviour.class; c = c.getSuperclass()) {
+            try {
+                c.getDeclaredMethod(USE_WITHOUT_ITEM,
+                        BlockState.class, Level.class, BlockPos.class,
+                        Player.class, BlockHitResult.class);
+                return true;
+            } catch (NoSuchMethodException ignored) {
+            }
+        }
+        return false;
     }
 }

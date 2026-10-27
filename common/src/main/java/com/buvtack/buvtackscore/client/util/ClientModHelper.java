@@ -2,6 +2,7 @@ package com.buvtack.buvtackscore.client.util;
 
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.components.DimensionalModWidget;
+import com.buvtack.buvtackscore.common.util.ModWorldHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
@@ -9,7 +10,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.permissions.Permissions;
@@ -21,13 +22,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.lwjgl.sdl.SDLMouse;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,17 +39,14 @@ public class ClientModHelper {
 
     public static MinecraftServer SERVER = null;
 
-    public static boolean isLeftClicking() {
-        // Pass null via MemoryStack or explicit null arrays/pointers if permitted,
-        // or query it using SDLMouse directly:
-        int buttons = SDLMouse.SDL_GetMouseState(null, null);
-        // SDL_BUTTON_LMASK is 1 (left mouse button bitmask)
-        return (buttons & 1) != 0;
+    public static boolean isNotLeftClicking() {
+        long windowHandle = Minecraft.getInstance().getWindow().handle();
+        return GLFW.glfwGetMouseButton(windowHandle, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_RELEASE;
     }
 
-    public static boolean isNotLeftClicking() {
-        int buttons = SDLMouse.SDL_GetMouseState(null, null);
-        return (buttons & 1) == 0;
+    public static boolean isLeftClicking() {
+        long windowHandle = Minecraft.getInstance().getWindow().handle();
+        return GLFW.glfwGetMouseButton(windowHandle, GLFW.GLFW_MOUSE_BUTTON_LEFT) == GLFW.GLFW_PRESS;
     }
 
     public static Player player() {
@@ -129,7 +127,7 @@ public class ClientModHelper {
         Block block = state.getBlock();
 
         if (block instanceof BonemealableBlock growable)
-            return growable.isValidBonemealTarget(mc.level, blockHit.getBlockPos(), state, BonemealSource.INTERACTION);
+            return growable.isValidBonemealTarget(mc.level, blockHit.getBlockPos(), state);
 
         return false;
     }
@@ -261,5 +259,9 @@ public class ClientModHelper {
             result.get(widget.alignment).add(widget);
         });
         return result;
+    }
+
+    public static boolean isInteractableBlock(BlockPos pos) {
+        return ModWorldHelper.isInteractableBlock(level(), pos);
     }
 }
