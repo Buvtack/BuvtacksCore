@@ -2,6 +2,7 @@ package com.buvtack.buvtackscore.client.util;
 
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.components.DimensionalModWidget;
+import com.buvtack.buvtackscore.common.util.ModWorldHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
@@ -9,7 +10,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.Holder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.permissions.Permissions;
@@ -29,10 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.lwjgl.sdl.SDLMouse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClientModHelper {
 
@@ -261,5 +259,9 @@ public class ClientModHelper {
             result.get(widget.alignment).add(widget);
         });
         return result;
+    }
+
+    public static boolean isInteractableBlock(BlockPos pos) {
+        return ModWorldHelper.isInteractableBlock(level(), pos);
     }
 }
