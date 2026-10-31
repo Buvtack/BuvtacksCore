@@ -21,16 +21,11 @@ import java.util.Map;
 
 public class ModButton extends DimensionalModWidget {
 
-    private ModColor backgroundColor;
-    private ModColor hoverColor;
-
     private Runnable onClick;
     private SoundEvent clickSound;
 
     private List<DimensionalModWidget> widgets;
 
-    private float fadeTicks;
-    private float fade;
     private boolean clickable = false;
 
     private ModButton() {
@@ -77,48 +72,6 @@ public class ModButton extends DimensionalModWidget {
 
     public void clickSound(SoundEvent sound) {
         this.clickSound = sound;
-    }
-
-    public void setFadeTicks(float fade) {
-        fadeTicks = fade;
-    }
-
-    public void tickFade() {
-        renderTasks.addTask(DefaultTaskNames.FADE,
-                new ModTask<>(DefaultTaskPriorities.MEANINGLESS,
-                        (graphics, mouseX, mouseY, partialTick) -> {
-                            if (hovered(mouseX, mouseY) && fade < fadeTicks)
-                                fade += partialTick;
-                            else if (!hovered(mouseX, mouseY))
-                                fade = 0;
-                        }));
-    }
-
-    public void addFadingBackground(ModColor color, float intensity) {
-        hoverColor = color;
-        renderTasks.addTask(DefaultTaskNames.BACKGROUND,
-                new ModTask<>(DefaultTaskPriorities.BACKGROUND,
-                        (graphics, mouseX, mouseY, partialTick) -> {
-                            if (hovered(mouseX, mouseY)) {
-                                ModColor fadedColor;
-                                if (fadeTicks == 0)
-                                    fadedColor = backgroundColor;
-                                else {
-                                    float ratio = fade / fadeTicks;
-                                    fadedColor = backgroundColor.lerp(hoverColor, ratio * intensity);
-                                }
-                                graphics.fill(left(), top(), right(), bottom(), fadedColor.color);
-                            }
-                        }));
-    }
-
-    public void addBackground(ModColor color) {
-        renderTasks.addTask(DefaultTaskNames.BACKGROUND,
-                new ModTask<>(DefaultTaskPriorities.BACKGROUND,
-                        (graphics, mouseX, mouseY, partialTick) -> {
-                            graphics.fill(left(), top(), right(), bottom(), color.color);
-                        }));
-        backgroundColor = color;
     }
 
     public void addVanillaBackground() {
@@ -180,18 +133,6 @@ public class ModButton extends DimensionalModWidget {
         renderTasks.addTask("renderIcon", new ModTask<>(DefaultTaskPriorities.CONTENT, icon::render));
     }
 
-//    public void renderContent() {
-//        renderTasks.addTask("renderContent", new ModTask<>(DefaultTaskPriorities.CONTENT,
-//                (graphics, mouseX, mouseY, partialTick) -> {
-//                    Map<Alignment, List<DimensionalModWidget>> splitWidgets = ClientModHelper.sortIntoAlignments(widgets);
-//                    for (Alignment alignment : Alignment.values()) {
-//                        List<DimensionalModWidget> value = splitWidgets.get(alignment);
-//                        int combinedWidth = value.stream().map(DimensionalModWidget::getMarginedWidth).reduce(0, Integer::sum);
-//                        int x = getXFromAlignmentOf(combinedWidth, )
-//                    }
-//                }));
-//    }
-
     public static Builder builder(int x, int y, int width, int height) {
         return new Builder(x, y, width, height);
     }
@@ -229,14 +170,25 @@ public class ModButton extends DimensionalModWidget {
         }
 
         public Builder background(ModColor color) {
-            button.addBackground(color);
+            button.backgroundColor = color;
             return this;
         }
 
         public Builder hover(ModColor color, float fade, float intensity) {
             button.setFadeTicks(fade);
             button.tickFade();
-            button.addFadingBackground(color, intensity);
+            button.hoverColor = color;
+            button.fadeIntensity = intensity;
+            return this;
+        }
+
+        public Builder pressed(ModColor color) {
+            button.pressedColor = color;
+            return this;
+        }
+
+        public Builder focused(ModColor color) {
+            button.focusedColor = color;
             return this;
         }
 

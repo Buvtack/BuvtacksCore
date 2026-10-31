@@ -1,7 +1,13 @@
 package com.buvtack.buvtackscore.client.gui.components;
 
+import com.buvtack.buvtackscore.client.graphics.ModColor;
+import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.Alignment;
+import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
+import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
+import com.buvtack.buvtackscore.client.gui.ModTask;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public abstract class DimensionalModWidget extends ModWidget {
 
@@ -11,7 +17,18 @@ public abstract class DimensionalModWidget extends ModWidget {
     public int padding;
     public int margin;
 
+    protected float fadeTicks;
+    protected float fade;
+    protected float fadeIntensity;
+
     public Alignment alignment;
+
+    protected ModColor hoverColor;
+    protected ModColor backgroundColor;
+    protected ModColor pressedColor;
+    protected ModColor focusedColor;
+
+    private boolean focused;
 
     public DimensionalModWidget(int x, int y, int width, int height) {
         super(x, y);
@@ -19,6 +36,47 @@ public abstract class DimensionalModWidget extends ModWidget {
         this.height = height;
         padding = 0;
         alignment = Alignment.LEFT;
+        pressedColor = null;
+        hoverColor = null;
+        backgroundColor = null;
+        focusedColor = null;
+        fade = 0;
+        fadeTicks = 0;
+        focused = false;
+
+        renderTasks.addTask(DefaultTaskNames.BACKGROUND, new ModTask<>(DefaultTaskPriorities.BACKGROUND, this::renderBackground));
+    }
+
+    public void setFadeTicks(float fade) {
+        fadeTicks = fade;
+    }
+
+    public void tickFade() {
+        renderTasks.addTask(DefaultTaskNames.FADE,
+                new ModTask<>(DefaultTaskPriorities.MEANINGLESS,
+                        (graphics, mouseX, mouseY, partialTick) -> {
+                            if (hovered(mouseX, mouseY) && fade < fadeTicks)
+                                fade += partialTick;
+                            else if (!hovered(mouseX, mouseY))
+                                fade = 0;
+                        }));
+    }
+
+    public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        if (backgroundColor != null)
+            graphics.fill(left(), top(), right(), bottom(), backgroundColor.color);
+
+        if (hoverColor != null && hovered(mouseX, mouseY)) {
+            float ratio = Math.min(fade, fadeTicks) / fadeTicks * fadeIntensity;
+            ModColor color = backgroundColor.lerp(hoverColor, ratio);
+            graphics.fill(left(), top(), right(), bottom(), color.color);
+        }
+
+        if (pressedColor != null && pressed(mouseX, mouseY))
+            graphics.fill(left(), top(), right(), bottom(), pressedColor.color);
+
+        if (focusedColor != null && focused)
+            graphics.fill(left(), top(), right(), bottom(), focusedColor.color);
     }
 
     public boolean hovered() {
@@ -125,5 +183,13 @@ public abstract class DimensionalModWidget extends ModWidget {
 
     protected int getXFromAlignmentOf(int width, Alignment alignment) {
         return alignment == Alignment.CENTER ? centerX() : (alignment == Alignment.RIGHT ? contentRight() - width : contentLeft());
+    }
+
+    public boolean pressed(int mouseX, int mouseY) {
+        return hovered(mouseX, mouseY) && ClientModHelper.isLeftClicking();
+    }
+
+    public boolean pressed() {
+        return hovered() && ClientModHelper.isLeftClicking();
     }
 }

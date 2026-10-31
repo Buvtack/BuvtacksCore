@@ -236,11 +236,13 @@ public class ClientModHelper {
     }
 
     public static double mouseX() {
-        return Minecraft.getInstance().mouseHandler.xpos();
+        Minecraft mc = Minecraft.getInstance();
+        return mc.mouseHandler.xpos() * (double) mc.getWindow().getGuiScaledWidth() / mc.getWindow().getScreenWidth();
     }
 
     public static double mouseY() {
-        return Minecraft.getInstance().mouseHandler.ypos();
+        Minecraft mc = Minecraft.getInstance();
+        return mc.mouseHandler.ypos() * (double) mc.getWindow().getGuiScaledHeight() / mc.getWindow().getScreenHeight();
     }
 
     public static void playSound(SoundEvent sound, float pitch) {

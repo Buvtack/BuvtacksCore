@@ -4,9 +4,7 @@ import com.buvtack.buvtackscore.Constants;
 import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.ModTask;
-import com.buvtack.buvtackscore.client.gui.components.ModButton;
-import com.buvtack.buvtackscore.client.gui.components.ModIcon;
-import com.buvtack.buvtackscore.client.gui.components.ModLabel;
+import com.buvtack.buvtackscore.client.gui.components.*;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -20,8 +18,16 @@ public class TestLibraryScreen extends ModScreen {
     private ModLabel testLabel;
     private ModIcon testIcon;
 
+    private ModPanel panel;
+    private ModScrollBar bar;
+
     public TestLibraryScreen(Component title) {
         super(title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
 
         testLabel = ModLabel.builder()
                 .alignment(Alignment.LEFT)
@@ -66,5 +72,20 @@ public class TestLibraryScreen extends ModScreen {
         });
 
         modWidgets.addAll(List.of(testLabel, testIcon, testButton));
+
+        bar = ModScrollBar.builder(0, 0, 10, this.height)
+                .outerHeight(1000)
+                .background(ModColors.DARK)
+                .pivot(ModColors.VANILLA_GRAY, ModColors.VANILLA_AQUA, 4, 1.0F, ModColors.VANILLA_AQUA.desaturate(0.7F))
+                .build();
+
+        //modWidgets.add(bar);
+
+        panel = ModPanel.builder(100, 100, 250, 150)
+                .backgroundColor(ModColors.VANILLA_RED)
+                .modWidgets(bar, testButton)
+                .build();
+
+        modWidgets.add(panel);
     }
 }

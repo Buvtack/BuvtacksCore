@@ -22,13 +22,13 @@ public class OptionsScreenMixin extends Screen {
             at = @At("RETURN")
     )
     private void addTestGuiButton(CallbackInfo ci) {
-//        addRenderableWidget(
-//                Button.builder(Component.literal("Test UI Library"), button -> {
-//                    if (minecraft != null)
-//                        minecraft.setScreenAndShow(new TestLibraryScreen(Component.literal("DAMNNN")));
-//                })
-//                        .bounds(10, 10, 100, 20)
-//                        .build()
-//        );
+        addRenderableWidget(
+                Button.builder(Component.literal("Test UI Library"), button -> {
+                    if (minecraft != null)
+                        minecraft.setScreenAndShow(new TestLibraryScreen(Component.literal("DAMNNN")));
+                })
+                        .bounds(10, 10, 100, 20)
+                        .build()
+        );
     }
 }
