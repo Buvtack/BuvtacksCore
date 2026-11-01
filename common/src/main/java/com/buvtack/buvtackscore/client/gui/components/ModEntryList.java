@@ -11,6 +11,7 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
     private int innerMargin;
 
     private ModScrollBar bar;
+    private float prevBarProgress;
 
     private ModEntryList(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -21,8 +22,8 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
             int entryY = this.y + innerMargin;
             for (ModWidget widget : modWidgets) {
                 ModEntry entry = (ModEntry) widget;
-                entry.x = entryX;
-                entry.y = entryY;
+                entry.setX(entryX);
+                entry.setY(entryY);
 
                 if (entry.getMarginedY() >= this.y + innerMargin && entry.getMarginedY() <= bottom() - innerMargin)
                     entry.render(graphics, mouseX, mouseY, partialTick);
@@ -31,16 +32,32 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
             }
         }));
 
-        tickTasks.addTask("updateScrollbarPivot", new ModTask<>(() -> {
-            int listHeight = 0;
-            for (ModWidget widget : modWidgets) {
-                ModEntry entry = (ModEntry) widget;
-                listHeight += entry.getMarginedHeight();
-            }
-            listHeight += innerMargin * 2;
+        renderTasks.addTask("renderBar", new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
+            if (bar != null)
+                bar.render(graphics, mouseX, mouseY, partialTick);
+        }));
 
-            float deltaY = bar.progress() * listHeight;
-            this.y -= (int) deltaY;
+        tickTasks.addTask("tickBar", new ModTask<>(() -> {
+            if (bar != null)
+                bar.tick();
+        }));
+
+        tickTasks.addTask("updateScrollbarPivot", new ModTask<>(() -> {
+            float scrollProgress = bar.progress();
+            if (scrollProgress != prevBarProgress) {
+                prevBarProgress = scrollProgress;
+
+                int listHeight = 0;
+                for (ModWidget widget : modWidgets) {
+                    ModEntry entry = (ModEntry) widget;
+                    listHeight += entry.getMarginedHeight() + gap;
+                }
+                listHeight += innerMargin * 2;
+                bar.setOuterHeight(listHeight);
+
+                float deltaY = bar.progress() * listHeight;
+                this.y = (int) -deltaY;
+            }
         }));
     }
 
@@ -54,15 +71,19 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
 
     public void setBar(ModScrollBar bar, Alignment alignment) {
         if (alignment == Alignment.LEFT)
-            bar.x = x;
+            bar.setX(x);
         else if (alignment == Alignment.RIGHT)
-            bar.x = contentRight() - bar.getMarginedWidth();
+            bar.setX(contentRight() - bar.getMarginedWidth());
         else if (alignment == Alignment.CENTER)
-            bar.x = centerX() - bar.getMarginedWidth() / 2;
+            bar.setX(centerX() - bar.getMarginedWidth() / 2);
 
-        bar.y = getContentY();
+        bar.setY(getContentY());
 
         this.bar = bar;
+    }
+
+    public void setGap(int gap) {
+        this.gap = gap;
     }
 
     public static class Builder<T extends ModEntry> {
@@ -80,6 +101,11 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
 
         public Builder<T> bar(ModScrollBar bar, Alignment alignment) {
             list.setBar(bar, alignment);
+            return this;
+        }
+
+        public Builder<T> gap(int gap) {
+            list.setGap(gap);
             return this;
         }
 

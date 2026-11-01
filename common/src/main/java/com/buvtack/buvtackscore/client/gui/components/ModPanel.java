@@ -35,10 +35,10 @@ public class ModPanel extends DimensionalModWidget {
                 widget.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }));
 
-        renderTasks.addTask(DefaultTaskNames.BACKGROUND, new ModTask<>(DefaultTaskPriorities.BACKGROUND, (graphics, mouseX, mouseY, partialTick) -> {
-            if (backgroundColor != null)
-                graphics.fill(left(), top(), right(), bottom(), backgroundColor.color);
-        }));
+//        renderTasks.addTask(DefaultTaskNames.BACKGROUND, new ModTask<>(DefaultTaskPriorities.BACKGROUND, (graphics, mouseX, mouseY, partialTick) -> {
+//            if (backgroundColor != null)
+//                graphics.fill(left(), top(), right(), bottom(), backgroundColor.color);
+//        }));
     }
 
     public void backgroundColor(ModColor color) {
@@ -46,6 +46,11 @@ public class ModPanel extends DimensionalModWidget {
     }
 
     public void addModWidgets(ModWidget... widgets) {
+        for (ModWidget widget : widgets) {
+            widget.x += x;
+            widget.y += y;
+        }
+
         modWidgets.addAll(Arrays.asList(widgets));
     }
 

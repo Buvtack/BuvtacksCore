@@ -1,6 +1,7 @@
 package com.buvtack.buvtackscore.client.gui.screens;
 
 import com.buvtack.buvtackscore.Constants;
+import com.buvtack.buvtackscore.client.graphics.ModColor;
 import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.ModTask;
@@ -11,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
+import java.util.Map;
 
 public class TestLibraryScreen extends ModScreen {
 
@@ -20,6 +22,8 @@ public class TestLibraryScreen extends ModScreen {
 
     private ModPanel panel;
     private ModScrollBar bar;
+    private ModEntry entry;
+    private ModEntryList<ModEntry> entryList;
 
     public TestLibraryScreen(Component title) {
         super(title);
@@ -28,6 +32,8 @@ public class TestLibraryScreen extends ModScreen {
     @Override
     public void init() {
         super.init();
+        modWidgets.clear();
+        children().clear();
 
         testLabel = ModLabel.builder()
                 .alignment(Alignment.LEFT)
@@ -73,19 +79,56 @@ public class TestLibraryScreen extends ModScreen {
 
         modWidgets.addAll(List.of(testLabel, testIcon, testButton));
 
+        entry = ModEntry.newBuilder(50, 50, 150, 30)
+                .backgroundColor(ModColors.VANILLA_DARK_GREEN.transparensify(0.0F))
+                .hover(ModColors.VANILLA_DARK_RED, 1F, 1.0F)
+                .modWidgets(
+                        ModButton.builder(10, 10, 90, 25)
+                                .background(ModColors.VANILLA_BLUE)
+                                .hover(ModColors.VANILLA_GREEN, 3, 1.0F)
+                                .build()
+                )
+                .build();
+
+        //modWidgets.add(entry);
+
+        ModEntry otherEntry = ModEntry.newBuilder(0, 0, 150, 30)
+                .backgroundColor(ModColors.VANILLA_GREEN)
+                .hover(ModColors.VANILLA_DARK_RED, 2, 1.0F)
+                .modWidgets(
+                        ModLabel.builder().content(Component.literal("Entry Text")).alignment(Alignment.CENTER).build()
+                )
+                .build();
+
         bar = ModScrollBar.builder(0, 0, 10, this.height)
                 .outerHeight(1000)
                 .background(ModColors.DARK)
                 .pivot(ModColors.VANILLA_GRAY, ModColors.VANILLA_AQUA, 4, 1.0F, ModColors.VANILLA_AQUA.desaturate(0.7F))
                 .build();
 
-        //modWidgets.add(bar);
+        int color = 0xFF000000;
+        ModEntry[] entries = new ModEntry[30];
+        for (int i = 0; i < 30; i++) {
+            entries[i] = entry(new ModColor(color));
+            color += 8;
+        }
 
-        panel = ModPanel.builder(100, 100, 250, 150)
-                .backgroundColor(ModColors.VANILLA_RED)
-                .modWidgets(bar, testButton)
+        entryList = ModEntryList.newBuilder(width / 2 - 100, 25, 200, height - 50)
+                .bar(bar, Alignment.RIGHT)
+                .entries(entries)
+                .gap(3)
                 .build();
 
-        modWidgets.add(panel);
+        modWidgets.add(entryList);
+    }
+
+    private ModEntry entry(ModColor background) {
+        return ModEntry.newBuilder(0, 0, 150, 30)
+                .backgroundColor(background)
+                .hover(ModColors.VANILLA_DARK_RED, 2, 1.0F)
+                .modWidgets(
+                        ModLabel.builder().coords(0, 0).content(Component.literal("Entry Text")).alignment(Alignment.CENTER).build()
+                )
+                .build();
     }
 }

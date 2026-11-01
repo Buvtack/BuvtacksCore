@@ -13,6 +13,34 @@ public class ModEntry extends ModPanel {
         hoverColor = color;
     }
 
+    public void setX(int x) {
+        int prevX = this.x;
+        int gap = x - prevX;
+        for (ModWidget widget : modWidgets)
+            widget.x += gap;
+
+        for (AbstractWidget widget : vanillaWidgets)
+            widget.setX(widget.getX() + gap);
+
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        int prevY = this.y;
+        int gap = y - prevY;
+        for (ModWidget widget : modWidgets)
+            widget.y += gap;
+
+        for (AbstractWidget widget : vanillaWidgets)
+            widget.setY(widget.getY() + gap);
+
+        this.y = y;
+    }
+
+    public static Builder newBuilder(int x, int y, int width, int height) {
+        return new Builder(x, y, width, height);
+    }
+
     public static class Builder {
 
         private ModEntry entry;

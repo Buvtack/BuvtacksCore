@@ -6,6 +6,7 @@ import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class ModScrollBar extends DimensionalModWidget {
 
@@ -22,6 +23,22 @@ public class ModScrollBar extends DimensionalModWidget {
         outerHeight = 0;
     }
 
+    @Override
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        if (pivot != null && pivot.getMarginedHeight() >= outerHeight)
+            return;
+
+        super.render(graphics, mouseX, mouseY, partialTick);
+    }
+
+    @Override
+    public void tick() {
+        if (pivot != null && pivot.getMarginedHeight() >= outerHeight)
+            return;
+
+        super.tick();
+    }
+
     public static Builder builder(int x, int y, int width, int height) {
         return new Builder(x, y, width, height);
     }
@@ -34,6 +51,9 @@ public class ModScrollBar extends DimensionalModWidget {
                 .build();
 
         tickTasks.addTask("movePivot", new ModTask<>(() -> {
+            if (pivot.getMarginedHeight() > outerHeight)
+                return;
+
             if (pivot.pressed() || clicked) {
                 if (!clicked) {
                     prevClickY = (int) ClientModHelper.mouseY();
@@ -78,6 +98,21 @@ public class ModScrollBar extends DimensionalModWidget {
     public float progress() {
         float totalProgress = bottom() - pivot.getMarginedHeight() - y;
         return pivot.y / totalProgress;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+        if (pivot != null)
+            pivot.x = x;
+    }
+
+    public void setY(int y) {
+        int prevY = this.y;
+        this.y = y;
+        if (pivot != null) {
+            int gap = y - prevY;
+            pivot.y += gap;
+        }
     }
 
     public static class Builder {
