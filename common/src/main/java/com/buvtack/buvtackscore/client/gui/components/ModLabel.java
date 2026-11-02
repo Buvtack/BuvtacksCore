@@ -4,27 +4,67 @@ import com.buvtack.buvtackscore.client.graphics.ModColor;
 import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.*;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 public class ModLabel extends DimensionalModWidget {
 
     public Component content;
+    private ModColor textColor;
+    private ModColor hoverTextColor;
+    private ModColor pressedTextColor;
+    private ModColor focusedTextColor;
 
-    private ModLabel() {
-        super(0, 0, 0, 0);
+    public ModLabel() {
+        this(0, 0);
     }
 
-    private ModLabel(int x, int y) {
+    public ModLabel(int x, int y) {
         super(x, y, 0, 0);
+
+        textColor = ModColors.WHITE;
+        renderTasks.addTask(DefaultTaskNames.CONTENT, new ModTask<>(DefaultTaskPriorities.CONTENT, this::renderContent));
+    }
+
+    private void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        if (content != null) {
+            ModColor color = textColor;
+            if (focused && focusedTextColor != null)
+                color = focusedTextColor;
+            else if (pressed(mouseX, mouseY) && pressedTextColor != null)
+                color = pressedTextColor;
+            else if (hovered(mouseX, mouseY) && focusedTextColor != null)
+                color = focusedTextColor;
+
+            graphics.text(ClientModHelper.font(), content.getString(), getContentX(), getContentY(), color.color);
+        }
     }
 
     public void alignment(Alignment alignment) {
         this.alignment = alignment;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public void setTextColor(ModColor color) {
+        textColor = color;
+    }
+
+    public void setHoverTextColor(ModColor color) {
+        hoverTextColor = color;
+    }
+
+    public void setPressedTextColor(ModColor color) {
+        pressedTextColor = color;
+    }
+
+    public void setFocusedTextColor(ModColor color) {
+        focusedTextColor = color;
+    }
+
+    public void setContent(Component content) {
+        this.content = content;
+        width = ClientModHelper.font().width(content.getString());
+        height = ClientModHelper.font().lineHeight;
     }
 
     public static class Builder {

@@ -6,6 +6,7 @@ import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
+import com.buvtack.buvtackscore.client.gui.builders.ModButtonBuilder;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
@@ -28,11 +29,11 @@ public class ModButton extends DimensionalModWidget {
 
     private boolean clickable = false;
 
-    private ModButton() {
+    public ModButton() {
         this(0, 0, 0, 0);
     }
 
-    private ModButton(int x, int y, int width, int height) {
+    public ModButton(int x, int y, int width, int height) {
         super(x, y, width, height);
         backgroundColor = ModColors.TRANSPARENT;
         hoverColor = ModColors.TRANSPARENT;
@@ -131,10 +132,6 @@ public class ModButton extends DimensionalModWidget {
                 }));
 
         renderTasks.addTask("renderIcon", new ModTask<>(DefaultTaskPriorities.CONTENT, icon::render));
-    }
-
-    public static Builder builder(int x, int y, int width, int height) {
-        return new Builder(x, y, width, height);
     }
 
     public static class Builder {

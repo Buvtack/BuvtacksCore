@@ -5,6 +5,7 @@ import com.buvtack.buvtackscore.client.graphics.ModColor;
 import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.ModTask;
+import com.buvtack.buvtackscore.client.gui.builders.*;
 import com.buvtack.buvtackscore.client.gui.components.*;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class TestLibraryScreen extends ModScreen {
 
@@ -25,6 +27,8 @@ public class TestLibraryScreen extends ModScreen {
     private ModEntry entry;
     private ModEntryList<ModEntry> entryList;
 
+    private int color = 0xFF000000;
+
     public TestLibraryScreen(Component title) {
         super(title);
     }
@@ -35,100 +39,54 @@ public class TestLibraryScreen extends ModScreen {
         modWidgets.clear();
         children().clear();
 
-        testLabel = ModLabel.builder()
-                .alignment(Alignment.LEFT)
-                .coords(10, 10)
-                .content(Component.literal("Test Label"))
-                .background(ModColors.NEUTRAL)
-                .border(ModColors.VANILLA_DARK_RED)
-                .build();
-
-        testIcon = ModIcon.builder()
-                .icon(Identifier.fromNamespaceAndPath("minecraft", "textures/item/diamond.png"))
-                .bounds(50, 10, 16, 16)
-                .build();
-
-        testButton = ModButton.builder(200, 200, 100, 40)
-                //.background(ModColors.VANILLA_GOLD.transparensify(0.75F))
-                //.hover(ModColors.VANILLA_GOLD.transparensify(0.5F), 12, 0.5F)
-                .withVanillaButtonTexture()
-                .withVanillaButtonHighlight()
-                .padding(1)
-                .onClick(() -> Constants.LOG.info("Button clicked!"))
-                .clickSound(SoundEvents.SHEEP_DEATH)
-                .build();
-
-        ModLabel buttonLabel = ModLabel.builder()
-                .coords(10, 10)
-                .alignment(Alignment.CENTER)
-                .content(Component.literal("Test Label"))
-                .build();
-
-        ModIcon buttonIcon = ModIcon.builder()
-                .bounds(0, 0, 16, 16)
-                .icon(Identifier.fromNamespaceAndPath("minecraft", "textures/item/emerald.png"))
-                .alignment(Alignment.CENTER)
-                .build();
-
-        testButton.label(buttonLabel, 0, 0);
-        testButton.icon(buttonIcon);
-        testButton.onClick(() -> {
-            Constants.LOG.info("label width: " + buttonLabel.width);
-            Constants.LOG.info("label alignment: " + buttonLabel.alignment.name());
-        });
-
-        modWidgets.addAll(List.of(testLabel, testIcon, testButton));
-
-        entry = ModEntry.newBuilder(50, 50, 150, 30)
-                .backgroundColor(ModColors.VANILLA_DARK_GREEN.transparensify(0.0F))
-                .hover(ModColors.VANILLA_DARK_RED, 1F, 1.0F)
-                .modWidgets(
-                        ModButton.builder(10, 10, 90, 25)
-                                .background(ModColors.VANILLA_BLUE)
-                                .hover(ModColors.VANILLA_GREEN, 3, 1.0F)
-                                .build()
-                )
-                .build();
-
-        //modWidgets.add(entry);
-
-        ModEntry otherEntry = ModEntry.newBuilder(0, 0, 150, 30)
-                .backgroundColor(ModColors.VANILLA_GREEN)
-                .hover(ModColors.VANILLA_DARK_RED, 2, 1.0F)
-                .modWidgets(
-                        ModLabel.builder().content(Component.literal("Entry Text")).alignment(Alignment.CENTER).build()
-                )
-                .build();
-
-        bar = ModScrollBar.builder(0, 0, 10, this.height)
-                .outerHeight(1000)
-                .background(ModColors.DARK)
-                .pivot(ModColors.VANILLA_GRAY, ModColors.VANILLA_AQUA, 4, 1.0F, ModColors.VANILLA_AQUA.desaturate(0.7F))
-                .build();
-
-        int color = 0xFF000000;
-        ModEntry[] entries = new ModEntry[30];
-        for (int i = 0; i < 30; i++) {
-            entries[i] = entry(new ModColor(color));
-            color += 8;
-        }
-
-        entryList = ModEntryList.newBuilder(width / 2 - 100, 25, 200, height - 50)
-                .bar(bar, Alignment.RIGHT)
-                .entries(entries)
-                .gap(3)
-                .build();
-
-        modWidgets.add(entryList);
+        ModButtonBuilder testButtonBuilder = new ModButtonBuilder();
+        testButtonBuilder.bounds(width / 2 - 75, height / 4, 150, 20);
+        testButtonBuilder.withVanillaBackground();
+        testButtonBuilder.withVanillaHover();
+        testButtonBuilder.padding(4);
+        testButtonBuilder.border(ModColors.VANILLA_GOLD);
+        testButtonBuilder.hover(ModColors.VANILLA_GOLD.transparensify(0.6F), 3, 1.0F);
+        testButtonBuilder.pressed(ModColors.VANILLA_GOLD.transparensify(0.85F));
+        testButtonBuilder.clickSound(SoundEvents.WITHER_SPAWN);
+        testButtonBuilder.onClick(() -> {Constants.LOG.info("THE MONSTER HAS BEEN SUMMONED");});
+        testButtonBuilder.modWidgets(List.of(() -> {
+                    ModLabelBuilder labelBuilder = new ModLabelBuilder();
+                    labelBuilder.coords(75, 10 - ClientModHelper.font().lineHeight / 2);
+                    labelBuilder.content(Component.literal("Friendly Button"));
+                    labelBuilder.alignment(Alignment.CENTER);
+                    labelBuilder.textColor(ModColors.VANILLA_DARK_RED);
+                    labelBuilder.hoverTextColor(ModColors.VANILLA_DARK_RED.brighten(0.15F));
+                    labelBuilder.pressedTextColor(ModColors.VANILLA_DARK_RED.brighten(0.3F));
+                    labelBuilder.focusedTextColor(ModColors.VANILLA_DARK_RED.brighten(0.45F));
+                    ModLabel label = labelBuilder.build();
+                    label.renderTasks.addTask("highlightText", new ModTask<>(((graphics, mouseX, mouseY, partialTick) -> {
+                        if (testButton.hovered(mouseX, mouseY))
+                            label.setTextColor(ModColors.VANILLA_YELLOW.brighten(0.5F));
+                        else
+                            label.setTextColor(ModColors.VANILLA_DARK_RED);
+                    })));
+                    return label;
+                }
+            )
+        );
+        testButton = testButtonBuilder.build();
+        modWidgets.add(testButton);
     }
 
-    private ModEntry entry(ModColor background) {
-        return ModEntry.newBuilder(0, 0, 150, 30)
-                .backgroundColor(background)
-                .hover(ModColors.VANILLA_DARK_RED, 2, 1.0F)
-                .modWidgets(
-                        ModLabel.builder().coords(0, 0).content(Component.literal("Entry Text")).alignment(Alignment.CENTER).build()
-                )
-                .build();
-    }
+//    private ModEntry entry(ModColor background) {
+//        ModEntryBuilder builder = new ModEntryBuilder();
+//        builder.bounds(0, 0, 150, 30);
+//        builder.background(background);
+//        builder.hover(ModColors.VANILLA_DARK_RED, 2, 1.0F);
+//        builder.modWidgets(List.of(() -> {
+//                ModLabelBuilder labelBuilder = new ModLabelBuilder();
+//                labelBuilder.coords(0, 0);
+//                labelBuilder.content(Component.literal("Entry Text"));
+//                labelBuilder.alignment(Alignment.CENTER);
+//                return labelBuilder.build();
+//                }
+//            )
+//        );
+//        return builder.build();
+//    }
 }

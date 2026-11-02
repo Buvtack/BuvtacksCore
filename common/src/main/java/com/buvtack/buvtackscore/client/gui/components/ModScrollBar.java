@@ -5,18 +5,22 @@ import com.buvtack.buvtackscore.client.graphics.ModColor;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
+import com.buvtack.buvtackscore.client.gui.builders.ModButtonBuilder;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class ModScrollBar extends DimensionalModWidget {
 
     private ModButton pivot;
-    private ModColor backgroundColor;
 
     private int prevClickY = 0;
     private boolean clicked = false;
 
     private int outerHeight;
+
+    public ModScrollBar() {
+        this(0, 0, 0, 0);
+    }
 
     public ModScrollBar(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -39,16 +43,19 @@ public class ModScrollBar extends DimensionalModWidget {
         super.tick();
     }
 
-    public static Builder builder(int x, int y, int width, int height) {
-        return new Builder(x, y, width, height);
+    public void pivot(ModColor color, ModColor hoverColor, float fade, float intensity, ModColor pressedcolor) {
+        ModButtonBuilder builder = new ModButtonBuilder();
+        builder.bounds(x, y, width, height);
+        builder.background(color);
+        builder.hover(hoverColor, fade, intensity);
+        builder.pressed(pressedColor);
+        pivot = builder.build();
+
+        pivot(pivot);
     }
 
-    public void pivot(ModColor color, ModColor hoverColor, float fade, float intensity, ModColor pressedColor) {
-        pivot = ModButton.builder(x, y, width, height)
-                .background(color)
-                .hover(hoverColor, fade, intensity)
-                .pressed(pressedColor)
-                .build();
+    public void pivot(ModButton button) {
+        this.pivot = button;
 
         tickTasks.addTask("movePivot", new ModTask<>(() -> {
             if (pivot.getMarginedHeight() > outerHeight)
@@ -96,6 +103,9 @@ public class ModScrollBar extends DimensionalModWidget {
     }
 
     public float progress() {
+        if (pivot == null)
+            return 0;
+
         float totalProgress = bottom() - pivot.getMarginedHeight() - y;
         return pivot.y / totalProgress;
     }

@@ -4,6 +4,11 @@ import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
+import com.buvtack.buvtackscore.client.gui.builders.ModEntryListBuilder;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class ModEntryList<T extends ModEntry> extends ModPanel {
 
@@ -13,7 +18,11 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
     private ModScrollBar bar;
     private float prevBarProgress;
 
-    private ModEntryList(int x, int y, int width, int height) {
+    public ModEntryList() {
+        this(0, 0, 0, 0);
+    }
+
+    public ModEntryList(int x, int y, int width, int height) {
         super(x, y, width, height);
 
         renderTasks.removeTask(DefaultTaskNames.renderVanillaWidgets);
@@ -61,11 +70,7 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
         }));
     }
 
-    public static <T extends ModEntry> Builder<T> newBuilder(int x, int y, int width, int height) {
-        return new Builder<>(x, y, width, height);
-    }
-
-    public void addEntries(T... entries) {
+    public void addEntries(List<Supplier<? extends ModWidget>> entries) {
         addModWidgets(entries);
     }
 
@@ -94,7 +99,7 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
             list = new ModEntryList(x, y, width, height);
         }
 
-        public Builder<T> entries(T... entries) {
+        public Builder<T> entries(List<Supplier<? extends ModWidget>> entries) {
             list.addEntries(entries);
             return this;
         }

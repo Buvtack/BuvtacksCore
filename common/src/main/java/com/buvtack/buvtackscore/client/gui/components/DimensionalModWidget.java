@@ -1,5 +1,6 @@
 package com.buvtack.buvtackscore.client.gui.components;
 
+import com.buvtack.buvtackscore.Constants;
 import com.buvtack.buvtackscore.client.graphics.ModColor;
 import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.Alignment;
@@ -8,6 +9,10 @@ import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class DimensionalModWidget extends ModWidget {
 
@@ -28,7 +33,9 @@ public abstract class DimensionalModWidget extends ModWidget {
     protected ModColor pressedColor;
     protected ModColor focusedColor;
 
-    private boolean focused;
+    protected ModColor borderColor;
+
+    protected boolean focused;
 
     public DimensionalModWidget(int x, int y, int width, int height) {
         super(x, y);
@@ -45,6 +52,7 @@ public abstract class DimensionalModWidget extends ModWidget {
         focused = false;
 
         renderTasks.addTask(DefaultTaskNames.BACKGROUND, new ModTask<>(DefaultTaskPriorities.BACKGROUND, this::renderBackground));
+        renderTasks.addTask(DefaultTaskNames.BORDER, new ModTask<>(DefaultTaskPriorities.BORDER, this::renderBorder));
     }
 
     public void setFadeTicks(float fade) {
@@ -62,13 +70,14 @@ public abstract class DimensionalModWidget extends ModWidget {
                         }));
     }
 
-    public void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    private void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (backgroundColor != null)
             graphics.fill(left(), top(), right(), bottom(), backgroundColor.color);
 
         if (hoverColor != null && hovered(mouseX, mouseY)) {
             float ratio = Math.min(fade, fadeTicks) / fadeTicks * fadeIntensity;
-            ModColor color = backgroundColor.lerp(hoverColor, ratio);
+            ModColor baseColor = backgroundColor != null ? backgroundColor : ModColors.TRANSPARENT;
+            ModColor color = baseColor.lerp(hoverColor, ratio);
             graphics.fill(left(), top(), right(), bottom(), color.color);
         }
 
@@ -79,6 +88,11 @@ public abstract class DimensionalModWidget extends ModWidget {
             graphics.fill(left(), top(), right(), bottom(), focusedColor.color);
     }
 
+    private void renderBorder(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        if (borderColor != null)
+            graphics.outline(left(), top(), getPaddedWidth(), getPaddedHeight(), borderColor.color);
+    }
+
     public boolean hovered() {
         return ClientModHelper.mouseX() >= getPaddedX() && ClientModHelper.mouseX() <= getPaddedX() + getPaddedWidth() &&
                 ClientModHelper.mouseY() >= getPaddedY() && ClientModHelper.mouseY() <= getPaddedY() + getPaddedHeight();
@@ -87,6 +101,40 @@ public abstract class DimensionalModWidget extends ModWidget {
     public boolean hovered(int mouseX, int mouseY) {
         return mouseX >= getPaddedX() && mouseX <= getPaddedX() + getPaddedWidth() &&
                 mouseY >= getPaddedY() && mouseY <= getPaddedY() + getPaddedHeight();
+    }
+
+    public void setBackgroundColor(ModColor color) {
+        this.backgroundColor = color;
+    }
+
+    public void setHoverColor(ModColor color, float fade, float intensity) {
+        hoverColor = color;
+        fadeTicks = fade;
+        fadeIntensity = intensity;
+    }
+
+    public void setPressedColor(ModColor color) {
+        pressedColor = color;
+    }
+
+    public void setFocusedColor(ModColor color) {
+        focusedColor = color;
+    }
+
+    public void setBorderColor(ModColor color) {
+        borderColor = color;
+    }
+
+    public void setPadding(int padding) {
+        this.padding = padding;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public int getContentX() {
