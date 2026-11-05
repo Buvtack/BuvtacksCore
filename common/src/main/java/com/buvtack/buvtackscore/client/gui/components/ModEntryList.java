@@ -6,6 +6,7 @@ import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
 import com.buvtack.buvtackscore.client.gui.builders.ModEntryListBuilder;
+import com.buvtack.buvtackscore.client.util.ClientModHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,19 +30,23 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
         super(x, y, width, height);
 
         renderTasks.removeTask(DefaultTaskNames.renderVanillaWidgets);
+        renderTasks.removeTask(DefaultTaskNames.renderModWidgets);
         renderTasks.addTask(DefaultTaskNames.renderModWidgets, new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
             int entryX = this.x + innerMargin;
             int entryY = this.y + innerMargin - offsetY;
+            //Constants.LOG.info("entryY:" + entryY);
+            graphics.enableScissor(contentLeft(), contentTop(), contentRight(), contentBottom());
             for (ModWidget widget : modWidgets) {
                 ModEntry entry = (ModEntry) widget;
                 entry.setX(entryX);
                 entry.setY(entryY);
 
-                if (entry.getMarginedY() >= this.y + innerMargin && entry.getMarginedY() <= bottom() - innerMargin)
+                //if (entry.getMarginedY() >= this.y + innerMargin && entry.getMarginedY() <= bottom() - innerMargin)
                     entry.render(graphics, mouseX, mouseY, partialTick);
 
                 entryY += entry.getMarginedHeight() + gap;
             }
+            graphics.disableScissor();
         }));
 
         renderTasks.addTask("renderBar", new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
@@ -59,20 +64,38 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
             if (scrollProgress != prevBarProgress) {
                 prevBarProgress = scrollProgress;
 
-                int listHeight = 0;
-                for (ModWidget widget : modWidgets) {
-                    ModEntry entry = (ModEntry) widget;
-                    listHeight += entry.getMarginedHeight() + gap;
-                }
-                listHeight += innerMargin * 2;
+                int listHeight = totalListHeight();
                 bar.setOuterHeight(listHeight);
-                Constants.LOG.info("listHeight: " + listHeight);
 
                 float deltaY = bar.progress() * listHeight;
-                offsetY = (int) -deltaY;
-                Constants.LOG.info("offsetY: " + offsetY);
+                offsetY = (int) deltaY;
             }
+            Constants.LOG.info("Bar Progress: " + bar.progress());
         }));
+
+        tickTasks.addTask("scroll", new ModTask<>(this::scroll));
+    }
+
+    private int totalListHeight() {
+        int height = 0;
+        for (ModWidget widget : modWidgets) {
+            ModEntry entry = (ModEntry) widget;
+            height += entry.getMarginedHeight() + gap;
+        }
+        height += innerMargin * 2;
+        return height;
+    }
+
+    private void scroll() {
+        if (hovered()) {
+            if (ClientModHelper.scroll() != ClientModHelper.prevScroll()) {
+                double delta = ClientModHelper.scroll() / 10;
+                double requiredProgress = delta / totalListHeight();
+                double effectiveProgress = 1 - Math.min(bar.progress() + requiredProgress, 1);
+                bar.movePivot(effectiveProgress);
+                //ClientModHelper.setPrevScroll(ClientModHelper.scroll());
+            }
+        }
     }
 
     public void addEntries(List<Supplier<? extends ModWidget>> entries) {

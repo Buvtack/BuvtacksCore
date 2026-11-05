@@ -33,6 +33,10 @@ public class ModScrollBarBuilder extends DimensionalModWidgetBuilder {
         ModScrollBar bar = new ModScrollBar();
         buildDimensionalWidget(bar);
         bar.setOuterHeight(outerHeight);
+
+        if (pivot != null)
+            pivot.bounds(x, y, width, height);
+
         bar.pivot(pivot);
         return bar;
     }

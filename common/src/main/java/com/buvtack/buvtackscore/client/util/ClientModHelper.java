@@ -22,7 +22,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,6 +37,27 @@ import java.util.Map;
 public class ClientModHelper {
 
     public static MinecraftServer SERVER = null;
+
+    private static double prevScroll = 0;
+    private static double scroll = 0;
+
+    static {
+        GLFW.glfwSetScrollCallback(Minecraft.getInstance().getWindow().handle(), (win, xOffset, yOffset) -> {
+            scroll = yOffset;
+        });
+    }
+
+    public static double scroll() {
+        return scroll;
+    }
+
+    public static void setPrevScroll(double prevScroll) {
+        ClientModHelper.prevScroll = prevScroll;
+    }
+
+    public static double prevScroll() {
+        return prevScroll;
+    }
 
     public static boolean isNotLeftClicking() {
         long windowHandle = Minecraft.getInstance().getWindow().handle();

@@ -43,6 +43,12 @@ public class ModScrollBar extends DimensionalModWidget {
         super.tick();
     }
 
+    public void movePivot(double progress) {
+        int freeToMoveHeight = bottom() - pivot.getMarginedHeight() - y;
+        int moveTo = (int) (freeToMoveHeight * progress);
+        pivot.setY(moveTo + y);
+    }
+
     public void pivot(ModColor color, ModColor hoverColor, float fade, float intensity, ModColor pressedcolor) {
         ModButtonBuilder builder = new ModButtonBuilder();
         builder.bounds(x, y, width, height);
@@ -84,6 +90,7 @@ public class ModScrollBar extends DimensionalModWidget {
 
         tickTasks.addTask("adjustPivotHeight", new ModTask<>(() -> {
             pivot.height = (int) ((float) height / outerHeight * height);
+            //Constants.LOG.info("Pivot Height: " + pivot.height);
         }));
 
         renderTasks.addTask(DefaultTaskNames.CONTENT, new ModTask<>(DefaultTaskPriorities.CONTENT, pivot::render));
@@ -107,7 +114,7 @@ public class ModScrollBar extends DimensionalModWidget {
             return 0;
 
         float totalProgress = bottom() - pivot.getMarginedHeight() - y;
-        return pivot.y / totalProgress;
+        return (pivot.y - y) / totalProgress;
     }
 
     public void setX(int x) {
