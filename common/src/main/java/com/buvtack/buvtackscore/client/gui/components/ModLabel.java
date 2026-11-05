@@ -29,15 +29,18 @@ public class ModLabel extends DimensionalModWidget {
 
     private void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         if (content != null) {
-            ModColor color = textColor;
+            ModColor color = null;
             if (focused && focusedTextColor != null)
                 color = focusedTextColor;
             else if (pressed(mouseX, mouseY) && pressedTextColor != null)
                 color = pressedTextColor;
-            else if (hovered(mouseX, mouseY) && focusedTextColor != null)
-                color = focusedTextColor;
+            else if (hovered(mouseX, mouseY) && hoverTextColor != null)
+                color = hoverTextColor;
+            else if (textColor != null)
+                color = textColor;
 
-            graphics.text(ClientModHelper.font(), content.getString(), getContentX(), getContentY(), color.color);
+            if (color != null)
+                graphics.text(ClientModHelper.font(), content.getString(), getContentX(), getContentY(), color.color);
         }
     }
 

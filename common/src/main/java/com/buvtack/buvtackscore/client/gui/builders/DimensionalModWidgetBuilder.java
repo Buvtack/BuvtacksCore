@@ -16,6 +16,9 @@ public class DimensionalModWidgetBuilder extends Builder {
     protected ModColor focusedColor;
 
     protected ModColor borderColor;
+    protected ModColor hoverBorderColor;
+    protected ModColor pressedBorderColor;
+    protected ModColor focusedBorderColor;
 
     protected float fadeTicks;
     protected float fadeIntensity;
@@ -55,6 +58,21 @@ public class DimensionalModWidgetBuilder extends Builder {
         return this;
     }
 
+    public DimensionalModWidgetBuilder hoverBorder(ModColor color) {
+        hoverBorderColor = color;
+        return this;
+    }
+
+    public DimensionalModWidgetBuilder pressedBorder(ModColor color) {
+        pressedBorderColor = color;
+        return this;
+    }
+
+    public DimensionalModWidgetBuilder focusedBorder(ModColor color) {
+        focusedBorderColor = color;
+        return this;
+    }
+
     public DimensionalModWidgetBuilder padding(int padding) {
         this.padding = padding;
         return this;
@@ -70,6 +88,9 @@ public class DimensionalModWidgetBuilder extends Builder {
         widget.setPressedColor(pressedColor);
         widget.setFocusedColor(focusedColor);
         widget.setBorderColor(borderColor);
+        widget.setHoverBorderColor(hoverBorderColor);
+        widget.setPressedBorderColor(pressedBorderColor);
+        widget.setFocusedBorderColor(focusedBorderColor);
         widget.tickFade();
     }
 }

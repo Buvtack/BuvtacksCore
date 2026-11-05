@@ -62,9 +62,9 @@ public class ModColor {
         int green = green();
 
         int brighter = (int) (ratio * 0xFF);
-        red = Math.min(0xFF, red + brighter);
-        blue = Math.min(0xFF, blue + brighter);
-        green = Math.min(0xFF, green + brighter);
+        red = (int) Math.min(0xFF, red + ((0xFF - red) * ratio));
+        blue = (int) Math.min(0xFF, blue + ((0xFF - blue) * ratio));
+        green = (int) Math.min(0xFF, green + ((0xFF - green) * ratio));
         return new ModColor(build(alpha(), red, green, blue));
     }
 

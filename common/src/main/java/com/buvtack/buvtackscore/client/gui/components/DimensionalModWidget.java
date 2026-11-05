@@ -34,6 +34,9 @@ public abstract class DimensionalModWidget extends ModWidget {
     protected ModColor focusedColor;
 
     protected ModColor borderColor;
+    protected ModColor hoverBorderColor;
+    protected ModColor pressedBorderColor;
+    protected ModColor focusedBorderColor;
 
     protected boolean focused;
 
@@ -71,25 +74,28 @@ public abstract class DimensionalModWidget extends ModWidget {
     }
 
     private void renderBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        if (backgroundColor != null)
-            graphics.fill(left(), top(), right(), bottom(), backgroundColor.color);
-
-        if (hoverColor != null && hovered(mouseX, mouseY)) {
+        if (focusedColor != null && focused)
+            graphics.fill(left(), top(), right(), bottom(), focusedColor.color);
+        else if (pressedColor != null && pressed(mouseX, mouseY))
+            graphics.fill(left(), top(), right(), bottom(), pressedColor.color);
+        else if (hoverColor != null && hovered(mouseX, mouseY)) {
             float ratio = Math.min(fade, fadeTicks) / fadeTicks * fadeIntensity;
             ModColor baseColor = backgroundColor != null ? backgroundColor : ModColors.TRANSPARENT;
             ModColor color = baseColor.lerp(hoverColor, ratio);
             graphics.fill(left(), top(), right(), bottom(), color.color);
         }
-
-        if (pressedColor != null && pressed(mouseX, mouseY))
-            graphics.fill(left(), top(), right(), bottom(), pressedColor.color);
-
-        if (focusedColor != null && focused)
-            graphics.fill(left(), top(), right(), bottom(), focusedColor.color);
+        else if (backgroundColor != null)
+            graphics.fill(left(), top(), right(), bottom(), backgroundColor.color);
     }
 
     private void renderBorder(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        if (borderColor != null)
+        if (focusedBorderColor != null && focused)
+            graphics.outline(left(), top(), getPaddedWidth(), getPaddedHeight(), focusedBorderColor.color);
+        else if (pressedBorderColor != null && pressed(mouseX, mouseY))
+            graphics.outline(left(), top(), getPaddedWidth(), getPaddedHeight(), pressedBorderColor.color);
+        else if (hoverBorderColor != null && hovered(mouseX, mouseY))
+            graphics.outline(left(), top(), getPaddedWidth(), getPaddedHeight(), hoverBorderColor.color);
+        else if (borderColor != null)
             graphics.outline(left(), top(), getPaddedWidth(), getPaddedHeight(), borderColor.color);
     }
 
@@ -123,6 +129,18 @@ public abstract class DimensionalModWidget extends ModWidget {
 
     public void setBorderColor(ModColor color) {
         borderColor = color;
+    }
+
+    public void setHoverBorderColor(ModColor color) {
+        hoverBorderColor = color;
+    }
+
+    public void setPressedBorderColor(ModColor color) {
+        pressedBorderColor = color;
+    }
+
+    public void setFocusedBorderColor(ModColor color) {
+        focusedBorderColor = color;
     }
 
     public void setPadding(int padding) {

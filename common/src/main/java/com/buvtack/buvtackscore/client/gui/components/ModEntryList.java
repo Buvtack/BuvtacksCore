@@ -1,5 +1,6 @@
 package com.buvtack.buvtackscore.client.gui.components;
 
+import com.buvtack.buvtackscore.Constants;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskNames;
 import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
@@ -15,6 +16,8 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
     private int gap;
     private int innerMargin;
 
+    private int offsetY = 0;
+
     private ModScrollBar bar;
     private float prevBarProgress;
 
@@ -28,7 +31,7 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
         renderTasks.removeTask(DefaultTaskNames.renderVanillaWidgets);
         renderTasks.addTask(DefaultTaskNames.renderModWidgets, new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
             int entryX = this.x + innerMargin;
-            int entryY = this.y + innerMargin;
+            int entryY = this.y + innerMargin - offsetY;
             for (ModWidget widget : modWidgets) {
                 ModEntry entry = (ModEntry) widget;
                 entry.setX(entryX);
@@ -63,9 +66,11 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
                 }
                 listHeight += innerMargin * 2;
                 bar.setOuterHeight(listHeight);
+                Constants.LOG.info("listHeight: " + listHeight);
 
                 float deltaY = bar.progress() * listHeight;
-                this.y = (int) -deltaY;
+                offsetY = (int) -deltaY;
+                Constants.LOG.info("offsetY: " + offsetY);
             }
         }));
     }
@@ -83,6 +88,7 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
             bar.setX(centerX() - bar.getMarginedWidth() / 2);
 
         bar.setY(getContentY());
+        bar.setHeight(getContentHeight());
 
         this.bar = bar;
     }

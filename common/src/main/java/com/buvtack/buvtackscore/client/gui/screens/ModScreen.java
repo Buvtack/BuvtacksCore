@@ -7,6 +7,7 @@ import com.buvtack.buvtackscore.client.gui.ModTickAction;
 import com.buvtack.buvtackscore.client.gui.components.ModWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
