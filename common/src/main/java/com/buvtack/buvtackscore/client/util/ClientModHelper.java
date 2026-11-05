@@ -38,7 +38,7 @@ public class ClientModHelper {
 
     public static MinecraftServer SERVER = null;
 
-    private static double prevScroll = 0;
+    //private static double prevScroll = 0;
     private static double scroll = 0;
 
     static {
@@ -51,13 +51,13 @@ public class ClientModHelper {
         return scroll;
     }
 
-    public static void setPrevScroll(double prevScroll) {
-        ClientModHelper.prevScroll = prevScroll;
+    public static void resetScroll() {
+        scroll = 0;
     }
 
-    public static double prevScroll() {
-        return prevScroll;
-    }
+//    public static double prevScroll() {
+//        return prevScroll;
+//    }
 
     public static boolean isNotLeftClicking() {
         long windowHandle = Minecraft.getInstance().getWindow().handle();

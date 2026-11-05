@@ -88,13 +88,13 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
 
     private void scroll() {
         if (hovered()) {
-            if (ClientModHelper.scroll() != ClientModHelper.prevScroll()) {
-                double delta = ClientModHelper.scroll() / 10;
-                double requiredProgress = delta / totalListHeight();
-                double effectiveProgress = 1 - Math.min(bar.progress() + requiredProgress, 1);
-                bar.movePivot(effectiveProgress);
-                //ClientModHelper.setPrevScroll(ClientModHelper.scroll());
-            }
+            double scroll = ClientModHelper.scroll();
+            if (scroll > 0)
+                bar.movePivot(Math.max(bar.progress() - 20.0 / totalListHeight(), 0));
+            else if (scroll < 0)
+                bar.movePivot(Math.min(bar.progress() + 20.0 / totalListHeight(), 1));
+
+            ClientModHelper.resetScroll();
         }
     }
 

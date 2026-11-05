@@ -83,6 +83,8 @@ public class TestLibraryScreen extends ModScreen {
         modWidgets.add(entryList);
     }
 
+    private int number = 0;
+
     private ModEntry entry(ModColor background) {
         ModEntryBuilder builder = new ModEntryBuilder();
         builder.bounds(0, 0, 150, 30);
@@ -91,7 +93,7 @@ public class TestLibraryScreen extends ModScreen {
         builder.modWidgets(List.of(() -> {
                 ModLabelBuilder labelBuilder = new ModLabelBuilder();
                 labelBuilder.coords(75, 15 - ClientModHelper.font().lineHeight / 2);
-                labelBuilder.content(Component.literal("Entry Text"));
+                labelBuilder.content(Component.literal("Entry Text " + number++));
                 labelBuilder.alignment(Alignment.CENTER);
                 return labelBuilder.build();
                 }
