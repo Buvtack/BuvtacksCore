@@ -12,6 +12,21 @@ public class ModColors {
     public static final ModColor GOLD = new ModColor(0xFFFFD20A);
     public static final ModColor TRANSPARENT_GRAY = new ModColor(0x66777777);
 
+    public static final ModColor RED = new ModColor(0xFFFF0000);
+    public static final ModColor GREEN = new ModColor(0xFF00FF00);
+    public static final ModColor BLUE = new ModColor(0xFF0000FF);
+    public static final ModColor YELLOW = new ModColor(0xFFFFFF00);
+    public static final ModColor CYAN = new ModColor(0xFF00FFFF);
+    public static final ModColor MAGENTA = new ModColor(0xFFFF00FF);
+    public static final ModColor ORANGE = new ModColor(0xFFFF8000);
+    public static final ModColor PURPLE = new ModColor(0xFF800080);
+    public static final ModColor PINK = new ModColor(0xFFFFC0CB);
+    public static final ModColor BROWN = new ModColor(0xFFA52A2A);
+    public static final ModColor BLACK = new ModColor(0xFF000000);
+    public static final ModColor GRAY = new ModColor(0xFF808080);
+    public static final ModColor LIGHT_GRAY = new ModColor(0xFFD3D3D3);
+    public static final ModColor DARK_GRAY = new ModColor(0xFF404040);
+
     public static final ModColor VANILLA_BLACK = new ModColor(0xFF000000);
     public static final ModColor VANILLA_DARK_BLUE = new ModColor(0xFF0000AA);
     public static final ModColor VANILLA_DARK_GREEN = new ModColor(0xFF00AA00);

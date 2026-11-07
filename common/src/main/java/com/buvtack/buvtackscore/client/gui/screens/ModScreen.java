@@ -5,6 +5,7 @@ import com.buvtack.buvtackscore.client.gui.ModTask;
 import com.buvtack.buvtackscore.client.gui.ModTaskManager;
 import com.buvtack.buvtackscore.client.gui.ModTickAction;
 import com.buvtack.buvtackscore.client.gui.components.ModWidget;
+import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -52,5 +53,8 @@ public abstract class ModScreen extends Screen {
 
         for (ModWidget widget : modWidgets)
             widget.tick();
+
+        ClientModHelper.resetInputChar();
+        ClientModHelper.resetKeyPressed();
     }
 }

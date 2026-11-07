@@ -1,13 +1,44 @@
 package com.buvtack.buvtackscore.client.gui.components;
 
 import com.buvtack.buvtackscore.client.graphics.ModColor;
+import com.buvtack.buvtackscore.client.gui.ModTask;
 import com.buvtack.buvtackscore.client.gui.builders.ModEntryBuilder;
+import com.buvtack.buvtackscore.client.util.ClientModHelper;
 import net.minecraft.client.gui.components.AbstractWidget;
 
 public class ModEntry extends ModPanel {
 
+    private ModEntryList<?> parentList;
+    private boolean clickable;
+
     public ModEntry(int x, int y, int width, int height) {
         super(x, y, width, height);
+        tickTasks.addTask("focusEntryInList", new ModTask<>(this::focusEntryInList));
+    }
+
+    private void focusEntryInList() {
+        if (parentList == null)
+            return;
+
+        if (ClientModHelper.isNotLeftClicking())
+            clickable = true;
+
+        if (parentList.getFocusedEntry() != this && pressed() && clickable) {
+            if (parentList.getFocusedEntry() != null)
+                parentList.getFocusedEntry().focused = false;
+
+            focused = true;
+            parentList.setFocusedEntry(this);
+            clickable = false;
+        }
+    }
+
+    public void setParentList(ModEntryList<?> list) {
+        parentList = list;
+    }
+
+    public ModEntryList<?> getParentList() {
+        return parentList;
     }
 
     public static class Builder {

@@ -1,5 +1,6 @@
 package com.buvtack.buvtackscore.client.util;
 
+import com.buvtack.buvtackscore.Constants;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.components.DimensionalModWidget;
 import com.buvtack.buvtackscore.common.util.ModWorldHelper;
@@ -29,10 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClientModHelper {
 
@@ -55,9 +53,74 @@ public class ClientModHelper {
         scroll = 0;
     }
 
-//    public static double prevScroll() {
-//        return prevScroll;
-//    }
+    private static Queue<Character> enteredChars = new ArrayDeque<>();
+    private static boolean enteredChar = false;
+
+    private static Queue<Integer> pressedKeys = new ArrayDeque<>();
+    private static boolean pressedKey;
+
+    private static boolean shiftPressed;
+    private static boolean controlPressed;
+
+    static {
+        long window = Minecraft.getInstance().getWindow().handle();
+        GLFW.glfwSetCharCallback(window, (win, codepoint) -> {
+            char c = (char) codepoint;
+            enteredChars.offer(c);
+            enteredChar = true;
+        });
+
+        GLFW.glfwSetKeyCallback(window, (win, key, scancode, action, mods) -> {
+           if (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT) {
+               pressedKeys.offer(key);
+               pressedKey = true;
+
+               if (key == GLFW.GLFW_KEY_RIGHT_CONTROL || key == GLFW.GLFW_KEY_LEFT_CONTROL)
+                   controlPressed = true;
+               else if (key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT)
+                   shiftPressed = true;
+           } else if (action == GLFW.GLFW_RELEASE) {
+               if (key == GLFW.GLFW_KEY_RIGHT_CONTROL || key == GLFW.GLFW_KEY_LEFT_CONTROL)
+                   controlPressed = false;
+               else if (key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT)
+                   shiftPressed = false;
+           }
+        });
+    }
+
+    public static boolean isShiftPressed() {
+        return shiftPressed;
+    }
+
+    public static boolean isControlPressed() {
+        return controlPressed;
+    }
+
+    public static Queue<Character> getEnteredChars() {
+        return enteredChars;
+    }
+
+    public static Queue<Integer> getPressedKeys() {
+        return pressedKeys;
+    }
+
+    public static boolean enteredChar() {
+        return enteredChar;
+    }
+
+    public static boolean pressedKey() {
+        return pressedKey;
+    }
+
+    public static void resetInputChar() {
+        enteredChar = false;
+        enteredChars.clear();
+    }
+
+    public static void resetKeyPressed() {
+        pressedKey = false;
+        pressedKeys.clear();
+    }
 
     public static boolean isNotLeftClicking() {
         long windowHandle = Minecraft.getInstance().getWindow().handle();

@@ -55,6 +55,7 @@ public class TestLibraryScreen extends ModScreen {
         testListBuilder.bar(listBar.build(), Alignment.RIGHT);
         testListBuilder.gap(3);
         testListBuilder.innerMargin(10);
+        testListBuilder.focusEntryOnClick(true);
         testListBuilder.bounds(width / 2 - 100, 40, 200, height - 80);
         testListBuilder.entries(List.of(
                 () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.0F)),
@@ -81,6 +82,22 @@ public class TestLibraryScreen extends ModScreen {
         ));
         entryList = testListBuilder.build();
         modWidgets.add(entryList);
+
+        ModTextBoxBuilder textBoxBuilder = new ModTextBoxBuilder();
+        textBoxBuilder.textColor(ModColors.VANILLA_GREEN);
+        textBoxBuilder.bounds(10, height / 2 - 15, 120, 30)
+                .background(ModColors.DARKER)
+                .focused(ModColors.VANILLA_BLACK)
+                .border(ModColors.VANILLA_DARK_GRAY)
+                .hoverBorder(ModColors.WHITE.darken(0.1F));
+        ModTextBox textBox = textBoxBuilder.build();
+        textBox.renderTasks.addTask("flashText", new ModTask<>((graphics, mouseX, mouseY, partialTick) -> {
+            if ((System.currentTimeMillis() / 150) % 2 == 0)
+                textBox.setTextColor(ModColors.VANILLA_GREEN);
+            else
+                textBox.setTextColor(ModColors.WHITE);
+        }));
+        modWidgets.add(textBox);
     }
 
     private int number = 0;
@@ -90,6 +107,7 @@ public class TestLibraryScreen extends ModScreen {
         builder.bounds(0, 0, 150, 30);
         builder.background(background);
         builder.hover(ModColors.VANILLA_DARK_RED, 2, 1.0F);
+        builder.focused(ModColors.VANILLA_GOLD);
         builder.modWidgets(List.of(() -> {
                 ModLabelBuilder labelBuilder = new ModLabelBuilder();
                 labelBuilder.coords(75, 15 - ClientModHelper.font().lineHeight / 2);

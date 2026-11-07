@@ -16,6 +16,8 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
 
     private int gap;
     private int innerMargin;
+    private boolean focusEntryOnClick;
+    private ModEntry focusedEntry;
 
     private int offsetY = 0;
 
@@ -40,9 +42,9 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
                 ModEntry entry = (ModEntry) widget;
                 entry.setX(entryX);
                 entry.setY(entryY);
+                entry.focused = entry == focusedEntry;
 
-                //if (entry.getMarginedY() >= this.y + innerMargin && entry.getMarginedY() <= bottom() - innerMargin)
-                    entry.render(graphics, mouseX, mouseY, partialTick);
+                entry.render(graphics, mouseX, mouseY, partialTick);
 
                 entryY += entry.getMarginedHeight() + gap;
             }
@@ -70,20 +72,10 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
                 float deltaY = bar.progress() * listHeight;
                 offsetY = (int) deltaY;
             }
-            Constants.LOG.info("Bar Progress: " + bar.progress());
         }));
 
         tickTasks.addTask("scroll", new ModTask<>(this::scroll));
-    }
-
-    private int totalListHeight() {
-        int height = 0;
-        for (ModWidget widget : modWidgets) {
-            ModEntry entry = (ModEntry) widget;
-            height += entry.getMarginedHeight() + gap;
-        }
-        height += innerMargin * 2;
-        return height;
+        tickTasks.addTask("focusEntryOnClick", new ModTask<>(this::unfocusEntry));
     }
 
     private void scroll() {
@@ -98,8 +90,63 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
         }
     }
 
+    private void unfocusEntry() {
+        if (!focusEntryOnClick)
+            return;
+
+        if (ClientModHelper.isLeftClicking() && !hovered())
+            focusedEntry = null;
+    }
+
+    public void setFocusedEntry(ModEntry entry) {
+        this.focusedEntry = entry;
+    }
+
+    private int totalListHeight() {
+        int height = 0;
+        for (ModWidget widget : modWidgets) {
+            ModEntry entry = (ModEntry) widget;
+            height += entry.getMarginedHeight() + gap;
+        }
+        height += innerMargin * 2;
+        return height;
+    }
+
+    public boolean isEntryHovered(ModEntry entry, int mouseX, int mouseY) {
+        return hovered(mouseX, mouseY) && entry.hovered(mouseX, mouseY);
+    }
+
+    public boolean isEntryHovered(ModEntry entry) {
+        return hovered() && entry.hovered();
+    }
+
+    public boolean isEntryPressed(ModEntry entry, int mouseX, int mouseY) {
+        return pressed(mouseX, mouseY) && entry.pressed(mouseX, mouseY);
+    }
+
+    public boolean isEntryPressed(ModEntry entry) {
+        return pressed() && entry.pressed();
+    }
+
     public void addEntries(List<Supplier<? extends ModWidget>> entries) {
         addModWidgets(entries);
+    }
+
+    @Override
+    public void addModWidgets(List<Supplier<? extends ModWidget>> suppliers) {
+        super.addModWidgets(suppliers);
+
+        for (ModWidget widget : modWidgets) {
+            if (widget instanceof ModEntry entry)
+                entry.setParentList(this);
+        }
+    }
+
+    public ModEntry getFocusedEntry() {
+        if (!focusEntryOnClick)
+            return null;
+
+        return focusedEntry;
     }
 
     public void setBar(ModScrollBar bar, Alignment alignment) {
@@ -118,6 +165,13 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
 
     public void setGap(int gap) {
         this.gap = gap;
+    }
+
+    public void setFocusEntryOnClick(boolean focus) {
+        if (!focus)
+            focusedEntry = null;
+
+        focusEntryOnClick = focus;
     }
 
     public static class Builder<T extends ModEntry> {
