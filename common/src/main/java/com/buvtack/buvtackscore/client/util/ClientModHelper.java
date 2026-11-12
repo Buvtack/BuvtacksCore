@@ -1,5 +1,6 @@
 package com.buvtack.buvtackscore.client.util;
 
+import com.buvtack.buvtackscore.Constants;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.components.DimensionalModWidget;
 import com.buvtack.buvtackscore.common.util.ModWorldHelper;
@@ -28,13 +29,122 @@ import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.lwjgl.sdl.SDLMouse;
+import org.lwjgl.sdl.*;
+import org.lwjgl.system.MemoryStack;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
 
 public class ClientModHelper {
 
     public static MinecraftServer SERVER = null;
+
+    //private static double prevScroll = 0;
+    private static double scroll = 0;
+
+    private static Queue<Character> enteredChars = new ArrayDeque<>();
+    private static boolean enteredChar = false;
+
+    private static Queue<Integer> pressedKeys = new ArrayDeque<>();
+    private static boolean pressedKey;
+
+    private static boolean shiftPressed;
+    private static boolean controlPressed;
+
+    private static final boolean[] keyWasDown = new boolean[512];
+
+    public static void handleSDLEvent(SDL_Event event) {
+        int type = event.type();
+
+        // 1. Scroll Callback Translation (GLFW: scroll_callback -> SDL: SDL_EVENT_MOUSE_WHEEL)
+        if (type == SDLEvents.SDL_EVENT_MOUSE_WHEEL) {
+            scroll = event.wheel().y();
+        }
+
+        // 2. Char Callback Translation (GLFW: char_callback -> SDL: SDL_EVENT_TEXT_INPUT)
+        else if (type == SDLEvents.SDL_EVENT_TEXT_INPUT) {
+            Constants.LOG.info("FUCK THIS BULLSHIT I SWEAR");
+            String text = event.text().textString();
+            if (text != null) {
+                for (char c : text.toCharArray()) {
+                    enteredChars.offer(c);
+                    enteredChar = true;
+                }
+            }
+        }
+
+        // 3. Key Callback Translation (GLFW: key_callback -> SDL: SDL_EVENT_KEY_DOWN / UP)
+        else if (type == SDLEvents.SDL_EVENT_KEY_DOWN || type == SDLEvents.SDL_EVENT_KEY_UP) {
+            boolean down = (type == SDLEvents.SDL_EVENT_KEY_DOWN);
+            int key = event.key().key();
+
+            // Track modifiers (matches your old modifier checks)
+            if (key == SDLKeycode.SDLK_LSHIFT || key == SDLKeycode.SDLK_RSHIFT) {
+                shiftPressed = down;
+            }
+            if (key == SDLKeycode.SDLK_LCTRL || key == SDLKeycode.SDLK_RCTRL) {
+                controlPressed = down;
+            }
+
+            if (down) {
+                pressedKeys.offer(key);
+                pressedKey = true;
+            }
+        }
+    }
+
+    private static void checkKeyEdge(ByteBuffer keystate, int scancode, int keycode) {
+        if (scancode >= keyWasDown.length) return;
+        boolean isDown = keystate.get(scancode) != 0;
+        if (isDown && !keyWasDown[scancode]) {
+            pressedKeys.offer(keycode);
+            pressedKey = true;
+        }
+        keyWasDown[scancode] = isDown;
+    }
+
+    public static double scroll() {
+        return scroll;
+    }
+
+    public static void resetScroll() {
+        scroll = 0;
+    }
+
+    public static boolean isShiftPressed() {
+        return shiftPressed;
+    }
+
+    public static boolean isControlPressed() {
+        return controlPressed;
+    }
+
+    public static Queue<Character> getEnteredChars() {
+        return enteredChars;
+    }
+
+    public static Queue<Integer> getPressedKeys() {
+        return pressedKeys;
+    }
+
+    public static boolean enteredChar() {
+        return enteredChar;
+    }
+
+    public static boolean pressedKey() {
+        return pressedKey;
+    }
+
+    public static void resetInputChar() {
+        enteredChar = false;
+        enteredChars.clear();
+    }
+
+    public static void resetKeyPressed() {
+        pressedKey = false;
+        pressedKeys.clear();
+    }
 
     public static boolean isLeftClicking() {
         // Pass null via MemoryStack or explicit null arrays/pointers if permitted,
@@ -236,11 +346,13 @@ public class ClientModHelper {
     }
 
     public static double mouseX() {
-        return Minecraft.getInstance().mouseHandler.xpos();
+        Minecraft mc = Minecraft.getInstance();
+        return mc.mouseHandler.xpos() * (double) mc.getWindow().getGuiScaledWidth() / mc.getWindow().getScreenWidth();
     }
 
     public static double mouseY() {
-        return Minecraft.getInstance().mouseHandler.ypos();
+        Minecraft mc = Minecraft.getInstance();
+        return mc.mouseHandler.ypos() * (double) mc.getWindow().getGuiScaledHeight() / mc.getWindow().getScreenHeight();
     }
 
     public static void playSound(SoundEvent sound, float pitch) {

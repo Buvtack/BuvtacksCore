@@ -1,18 +1,22 @@
 package com.buvtack.buvtackscore.client.gui.screens;
 
 import com.buvtack.buvtackscore.Constants;
+import com.buvtack.buvtackscore.client.graphics.ModColor;
 import com.buvtack.buvtackscore.client.graphics.ModColors;
 import com.buvtack.buvtackscore.client.gui.Alignment;
+import com.buvtack.buvtackscore.client.gui.DefaultTaskPriorities;
 import com.buvtack.buvtackscore.client.gui.ModTask;
-import com.buvtack.buvtackscore.client.gui.components.ModButton;
-import com.buvtack.buvtackscore.client.gui.components.ModIcon;
-import com.buvtack.buvtackscore.client.gui.components.ModLabel;
+import com.buvtack.buvtackscore.client.gui.builders.*;
+import com.buvtack.buvtackscore.client.gui.components.*;
 import com.buvtack.buvtackscore.client.util.ClientModHelper;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class TestLibraryScreen extends ModScreen {
 
@@ -20,51 +24,99 @@ public class TestLibraryScreen extends ModScreen {
     private ModLabel testLabel;
     private ModIcon testIcon;
 
+    private ModPanel panel;
+    private ModScrollBar bar;
+    private ModEntry entry;
+    private ModEntryList<ModEntry> entryList;
+
+    private int color = 0xFF000000;
+
     public TestLibraryScreen(Component title) {
         super(title);
+    }
 
-        testLabel = ModLabel.builder()
-                .alignment(Alignment.LEFT)
-                .coords(10, 10)
-                .content(Component.literal("Test Label"))
-                .background(ModColors.NEUTRAL)
-                .border(ModColors.VANILLA_DARK_RED)
-                .build();
+    @Override
+    public void init() {
+        super.init();
+        modWidgets.clear();
+        children().clear();
 
-        testIcon = ModIcon.builder()
-                .icon(Identifier.fromNamespaceAndPath("minecraft", "textures/item/diamond.png"))
-                .bounds(50, 10, 16, 16)
-                .build();
+        ModScrollBarBuilder listBar = new ModScrollBarBuilder();
+        listBar.background(ModColors.VANILLA_RED.brighten(0.2F));
+        listBar.hover(ModColors.VANILLA_BLACK.brighten(0.4F), 2, 1.0F);
+        listBar.pivot(ModColors.VANILLA_GRAY, ModColors.VANILLA_GRAY.brighten(0.15F), 2, 1.0F, ModColors.VANILLA_GRAY.brighten(0.4F));
+        listBar.bounds(0, 0, 10, 100);
+        listBar.outerHeight(1000);
+        //ModScrollBar bar = listBar.build();
+        //modWidgets.add(bar);
+        //bar.setOuterHeight(300);
 
-        testButton = ModButton.builder(200, 200, 100, 40)
-                //.background(ModColors.VANILLA_GOLD.transparensify(0.75F))
-                //.hover(ModColors.VANILLA_GOLD.transparensify(0.5F), 12, 0.5F)
-                .withVanillaButtonTexture()
-                .withVanillaButtonHighlight()
-                .padding(1)
-                .onClick(() -> Constants.LOG.info("Button clicked!"))
-                .clickSound(SoundEvents.SHEEP_DEATH)
-                .build();
+        ModEntryListBuilder<ModEntry> testListBuilder = new ModEntryListBuilder<>();
+        testListBuilder.bar(listBar.build(), Alignment.RIGHT);
+        testListBuilder.gap(3);
+        testListBuilder.innerMargin(10);
+        testListBuilder.focusEntryOnClick(true);
+        testListBuilder.bounds(width / 2 - 100, 40, 200, height - 80);
+        testListBuilder.entries(List.of(
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.0F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.05F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.1F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.15F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.2F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.25F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.3F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.35F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.4F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.45F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.5F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.55F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.6F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.65F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.7F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.75F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.8F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.85F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.9F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(0.95F)),
+                () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(1.0F))
+        ));
+        entryList = testListBuilder.build();
+        modWidgets.add(entryList);
 
-        ModLabel buttonLabel = ModLabel.builder()
-                .coords(10, 10)
-                .alignment(Alignment.CENTER)
-                .content(Component.literal("Test Label"))
-                .build();
+        ModTextBoxBuilder textBoxBuilder = new ModTextBoxBuilder();
+        textBoxBuilder.textColor(ModColors.VANILLA_GREEN);
+        textBoxBuilder.bounds(10, height / 2 - 15, 120, 30)
+                .background(ModColors.DARKER)
+                .focused(ModColors.VANILLA_BLACK)
+                .border(ModColors.VANILLA_DARK_GRAY)
+                .hoverBorder(ModColors.WHITE.darken(0.1F));
+        ModTextBox textBox = textBoxBuilder.build();
+        textBox.renderTasks.addTask("flashText", new ModTask<>((graphics, mouseX, mouseY, partialTick) -> {
+            if ((System.currentTimeMillis() / 150) % 2 == 0)
+                textBox.setTextColor(ModColors.VANILLA_GREEN);
+            else
+                textBox.setTextColor(ModColors.WHITE);
+        }));
+        modWidgets.add(textBox);
+    }
 
-        ModIcon buttonIcon = ModIcon.builder()
-                .bounds(0, 0, 16, 16)
-                .icon(Identifier.fromNamespaceAndPath("minecraft", "textures/item/emerald.png"))
-                .alignment(Alignment.CENTER)
-                .build();
+    private int number = 0;
 
-        testButton.label(buttonLabel, 0, 0);
-        testButton.icon(buttonIcon);
-        testButton.onClick(() -> {
-            Constants.LOG.info("label width: " + buttonLabel.width);
-            Constants.LOG.info("label alignment: " + buttonLabel.alignment.name());
-        });
-
-        modWidgets.addAll(List.of(testLabel, testIcon, testButton));
+    private ModEntry entry(ModColor background) {
+        ModEntryBuilder builder = new ModEntryBuilder();
+        builder.bounds(0, 0, 150, 30);
+        builder.background(background);
+        builder.hover(ModColors.VANILLA_DARK_RED, 2, 1.0F);
+        builder.focused(ModColors.VANILLA_GOLD);
+        builder.modWidgets(List.of(() -> {
+                ModLabelBuilder labelBuilder = new ModLabelBuilder();
+                labelBuilder.coords(75, 15 - ClientModHelper.font().lineHeight / 2);
+                labelBuilder.content(Component.literal("Entry Text " + number++));
+                labelBuilder.alignment(Alignment.CENTER);
+                return labelBuilder.build();
+                }
+            )
+        );
+        return builder.build();
     }
 }
