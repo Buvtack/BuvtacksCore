@@ -21,6 +21,7 @@ import java.util.Map;
 public class ModTextBox extends DimensionalModWidget {
 
     private String text;
+    private int textDeltaX;
     private boolean clickable;
     private ModPanel caret;
     private int caretIndex;
@@ -40,12 +41,17 @@ public class ModTextBox extends DimensionalModWidget {
         caret = caretBuilder.build();
         caretIndex = 0;
         selectionAnchor = 0;
+        textDeltaX = 0;
+
+        renderTasks.addTask("updateTextDeltaX", new ModTask<>(DefaultTaskPriorities.URGENT, (graphics, mouseX, mouseY, partialTick) -> {
+            textDeltaX = caret.x > this.x + this.width - 5 ? caret.x - (this.x + this.width - 5) : (caret.x < this.x ? caret.x - this.x : 0);
+        }));
 
         renderTasks.addTask("renderText", new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
             int y0 = centerY() - ClientModHelper.font().lineHeight / 2;
             int y1 = centerY() + ClientModHelper.font().lineHeight / 2;
             graphics.enableScissor(x + 5, y0, contentRight() - 5, y1);
-            graphics.text(ClientModHelper.font(), text, x + 5, centerY() - ClientModHelper.font().lineHeight / 2, textColor.color);
+            graphics.text(ClientModHelper.font(), text, x + 5 - textDeltaX, centerY() - ClientModHelper.font().lineHeight / 2, textColor.color);
             graphics.disableScissor();
         }));
 
@@ -72,7 +78,7 @@ public class ModTextBox extends DimensionalModWidget {
         renderTasks.addTask("renderCaret", new ModTask<>(DefaultTaskPriorities.CONTENT + 1, (graphics, mouseX, mouseY, partialTick) -> {
             boolean shown = (System.currentTimeMillis() / 500) % 2 == 0;
             if (focused && shown)
-                graphics.fill(caret.left(), caret.top(), caret.right(), caret.bottom(), textColor.color);
+                graphics.fill(caret.left() - textDeltaX, caret.top(), caret.right() - textDeltaX, caret.bottom(), textColor.color);
         }));
 
         tickTasks.addTask("handleInput", new ModTask<>(this::tickTextInput));
@@ -218,6 +224,7 @@ public class ModTextBox extends DimensionalModWidget {
                             break;
                         }
                     }
+
                     caretIndex = newCaretIndex;
                 } else {
                     int newCaretIndex = caretIndex;
@@ -262,6 +269,7 @@ public class ModTextBox extends DimensionalModWidget {
                             break;
                         }
                     }
+
                     caretIndex = newCaretIndex;
                 } else {
                     int newCaretIndex = caretIndex;
