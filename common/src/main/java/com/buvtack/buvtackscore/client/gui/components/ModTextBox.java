@@ -359,4 +359,8 @@ public class ModTextBox extends DimensionalModWidget {
     public void setTextColor(ModColor color) {
         textColor = color;
     }
+
+    public String getText() {
+        return text;
+    }
 }

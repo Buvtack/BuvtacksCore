@@ -36,90 +36,46 @@ public class ClientModHelper {
 
     public static MinecraftServer SERVER = null;
 
-    //private static double prevScroll = 0;
-    private static double scroll = 0;
-
-    static {
-        GLFW.glfwSetScrollCallback(Minecraft.getInstance().getWindow().handle(), (win, xOffset, yOffset) -> {
-            scroll = yOffset;
-        });
-    }
-
     public static double scroll() {
-        return scroll;
+        return ModMouseHandler.scroll;
     }
 
     public static void resetScroll() {
-        scroll = 0;
-    }
-
-    private static Queue<Character> enteredChars = new ArrayDeque<>();
-    private static boolean enteredChar = false;
-
-    private static Queue<Integer> pressedKeys = new ArrayDeque<>();
-    private static boolean pressedKey;
-
-    private static boolean shiftPressed;
-    private static boolean controlPressed;
-
-    static {
-        long window = Minecraft.getInstance().getWindow().handle();
-        GLFW.glfwSetCharCallback(window, (win, codepoint) -> {
-            char c = (char) codepoint;
-            enteredChars.offer(c);
-            enteredChar = true;
-        });
-
-        GLFW.glfwSetKeyCallback(window, (win, key, scancode, action, mods) -> {
-           if (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT) {
-               pressedKeys.offer(key);
-               pressedKey = true;
-
-               if (key == GLFW.GLFW_KEY_RIGHT_CONTROL || key == GLFW.GLFW_KEY_LEFT_CONTROL)
-                   controlPressed = true;
-               else if (key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT)
-                   shiftPressed = true;
-           } else if (action == GLFW.GLFW_RELEASE) {
-               if (key == GLFW.GLFW_KEY_RIGHT_CONTROL || key == GLFW.GLFW_KEY_LEFT_CONTROL)
-                   controlPressed = false;
-               else if (key == GLFW.GLFW_KEY_RIGHT_SHIFT || key == GLFW.GLFW_KEY_LEFT_SHIFT)
-                   shiftPressed = false;
-           }
-        });
+        ModMouseHandler.scroll = 0;
     }
 
     public static boolean isShiftPressed() {
-        return shiftPressed;
+        return ModKeyboardHandler.shiftPressed;
     }
 
     public static boolean isControlPressed() {
-        return controlPressed;
+        return ModKeyboardHandler.controlPressed;
     }
 
     public static Queue<Character> getEnteredChars() {
-        return enteredChars;
+        return ModKeyboardHandler.enteredChars;
     }
 
     public static Queue<Integer> getPressedKeys() {
-        return pressedKeys;
+        return ModKeyboardHandler.pressedKeys;
     }
 
     public static boolean enteredChar() {
-        return enteredChar;
+        return ModKeyboardHandler.enteredChar;
     }
 
     public static boolean pressedKey() {
-        return pressedKey;
+        return ModKeyboardHandler.pressedKey;
     }
 
     public static void resetInputChar() {
-        enteredChar = false;
-        enteredChars.clear();
+        ModKeyboardHandler.enteredChar = false;
+        ModKeyboardHandler.enteredChars.clear();
     }
 
     public static void resetKeyPressed() {
-        pressedKey = false;
-        pressedKeys.clear();
+        ModKeyboardHandler.pressedKey = false;
+        ModKeyboardHandler.pressedKeys.clear();
     }
 
     public static boolean isNotLeftClicking() {

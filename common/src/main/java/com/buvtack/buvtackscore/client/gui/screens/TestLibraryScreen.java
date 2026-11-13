@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -98,6 +99,11 @@ public class TestLibraryScreen extends ModScreen {
                 textBox.setTextColor(ModColors.WHITE);
         }));
         modWidgets.add(textBox);
+
+        textBox.tickTasks.addTask("printText", new ModTask<>(() -> {
+            //if ((Instant.now().getEpochSecond() / 500) % 2 == 0)
+                Constants.LOG.info(textBox.getText());
+        }));
     }
 
     private int number = 0;

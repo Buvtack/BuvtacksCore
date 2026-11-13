@@ -6,7 +6,9 @@
   "mixins": [],
   "client": [
     "client.OptionsScreenMixin",
-    "client.ScrollMixin"
+    "client.ScrollMixin",
+    "client.KeyboardMixin",
+    "client.MouseMixin"
   ],
   "server": [],
   "injectors": {
