@@ -40,110 +40,46 @@ public class ClientModHelper {
 
     public static MinecraftServer SERVER = null;
 
-    //private static double prevScroll = 0;
-    private static double scroll = 0;
-
-    private static Queue<Character> enteredChars = new ArrayDeque<>();
-    private static boolean enteredChar = false;
-
-    private static Queue<Integer> pressedKeys = new ArrayDeque<>();
-    private static boolean pressedKey;
-
-    private static boolean shiftPressed;
-    private static boolean controlPressed;
-
-    private static final boolean[] keyWasDown = new boolean[512];
-
-    public static void handleSDLEvent(SDL_Event event) {
-        int type = event.type();
-
-        // 1. Scroll Callback Translation (GLFW: scroll_callback -> SDL: SDL_EVENT_MOUSE_WHEEL)
-        if (type == SDLEvents.SDL_EVENT_MOUSE_WHEEL) {
-            scroll = event.wheel().y();
-        }
-
-        // 2. Char Callback Translation (GLFW: char_callback -> SDL: SDL_EVENT_TEXT_INPUT)
-        else if (type == SDLEvents.SDL_EVENT_TEXT_INPUT) {
-            Constants.LOG.info("FUCK THIS BULLSHIT I SWEAR");
-            String text = event.text().textString();
-            if (text != null) {
-                for (char c : text.toCharArray()) {
-                    enteredChars.offer(c);
-                    enteredChar = true;
-                }
-            }
-        }
-
-        // 3. Key Callback Translation (GLFW: key_callback -> SDL: SDL_EVENT_KEY_DOWN / UP)
-        else if (type == SDLEvents.SDL_EVENT_KEY_DOWN || type == SDLEvents.SDL_EVENT_KEY_UP) {
-            boolean down = (type == SDLEvents.SDL_EVENT_KEY_DOWN);
-            int key = event.key().key();
-
-            // Track modifiers (matches your old modifier checks)
-            if (key == SDLKeycode.SDLK_LSHIFT || key == SDLKeycode.SDLK_RSHIFT) {
-                shiftPressed = down;
-            }
-            if (key == SDLKeycode.SDLK_LCTRL || key == SDLKeycode.SDLK_RCTRL) {
-                controlPressed = down;
-            }
-
-            if (down) {
-                pressedKeys.offer(key);
-                pressedKey = true;
-            }
-        }
-    }
-
-    private static void checkKeyEdge(ByteBuffer keystate, int scancode, int keycode) {
-        if (scancode >= keyWasDown.length) return;
-        boolean isDown = keystate.get(scancode) != 0;
-        if (isDown && !keyWasDown[scancode]) {
-            pressedKeys.offer(keycode);
-            pressedKey = true;
-        }
-        keyWasDown[scancode] = isDown;
-    }
-
     public static double scroll() {
-        return scroll;
+        return ModMouseHandler.scroll;
     }
 
     public static void resetScroll() {
-        scroll = 0;
+        ModMouseHandler.scroll = 0;
     }
 
     public static boolean isShiftPressed() {
-        return shiftPressed;
+        return ModKeyboardHandler.shiftPressed;
     }
 
     public static boolean isControlPressed() {
-        return controlPressed;
+        return ModKeyboardHandler.controlPressed;
     }
 
     public static Queue<Character> getEnteredChars() {
-        return enteredChars;
+        return ModKeyboardHandler.enteredChars;
     }
 
     public static Queue<Integer> getPressedKeys() {
-        return pressedKeys;
+        return ModKeyboardHandler.pressedKeys;
     }
 
     public static boolean enteredChar() {
-        return enteredChar;
+        return ModKeyboardHandler.enteredChar;
     }
 
     public static boolean pressedKey() {
-        return pressedKey;
+        return ModKeyboardHandler.pressedKey;
     }
 
     public static void resetInputChar() {
-        enteredChar = false;
-        enteredChars.clear();
+        ModKeyboardHandler.enteredChar = false;
+        ModKeyboardHandler.enteredChars.clear();
     }
 
     public static void resetKeyPressed() {
-        pressedKey = false;
-        pressedKeys.clear();
+        ModKeyboardHandler.pressedKey = false;
+        ModKeyboardHandler.pressedKeys.clear();
     }
 
     public static boolean isLeftClicking() {

@@ -157,6 +157,7 @@ public class ModTextBox extends DimensionalModWidget {
     }
 
     private void typeChar() {
+        //Constants.LOG.info("Typing");
         if (ClientModHelper.enteredChar()) {
             for (char ch : ClientModHelper.getEnteredChars()) {
                 String enteredChar = Character.toString(ch);

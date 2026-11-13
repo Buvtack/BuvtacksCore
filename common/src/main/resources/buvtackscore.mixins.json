@@ -6,8 +6,8 @@
   "mixins": [],
   "client": [
     "client.OptionsScreenMixin",
-    "client.SDLMixin",
-    "client.ClientTickMixin"
+    "client.KeyboardMixin",
+    "client.MouseMixin"
   ],
   "server": [],
   "injectors": {
