@@ -136,4 +136,12 @@ public abstract class ModWidget {
     public void setMargin(int margin) {
         this.margin = margin;
     }
+
+    public List<AbstractWidget> getVanillaWidgets() {
+        return vanillaWidgets;
+    }
+
+    public List<ModWidget> getModWidgets() {
+        return modWidgets;
+    }
 }
