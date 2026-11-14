@@ -34,7 +34,7 @@ public class ModTextBox extends DimensionalModWidget {
         text = "";
         textColor = ModColors.WHITE;
         ModPanelBuilder caretBuilder = new ModPanelBuilder();
-        caretBuilder.bounds(x + 5, centerY() - ClientModHelper.font().lineHeight / 2 - 1, 1, ClientModHelper.font().lineHeight + 2);
+        caretBuilder.bounds(this.x + 5, centerY() - ClientModHelper.font().lineHeight / 2 - 1, 1, ClientModHelper.font().lineHeight + 2);
         caret = caretBuilder.build();
         caretIndex = 0;
         selectionAnchor = 0;
@@ -47,8 +47,8 @@ public class ModTextBox extends DimensionalModWidget {
         renderTasks.addTask("renderText", new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
             int y0 = centerY() - ClientModHelper.font().lineHeight / 2;
             int y1 = centerY() + ClientModHelper.font().lineHeight / 2;
-            graphics.enableScissor(x + 5, y0, contentRight() - 5, y1);
-            graphics.text(ClientModHelper.font(), text, x + 5 - textDeltaX, centerY() - ClientModHelper.font().lineHeight / 2, textColor.color);
+            graphics.enableScissor(this.x + 5, y0, contentRight() - 5, y1);
+            graphics.text(ClientModHelper.font(), text, this.x + 5 - textDeltaX, centerY() - ClientModHelper.font().lineHeight / 2, textColor.color);
             graphics.disableScissor();
         }));
 
@@ -57,7 +57,7 @@ public class ModTextBox extends DimensionalModWidget {
                 int y0 = centerY() - ClientModHelper.font().lineHeight / 2;
                 int y1 = centerY() + ClientModHelper.font().lineHeight / 2;
 
-                graphics.enableScissor(x + 5, y0, contentRight() - 5, y1);
+                graphics.enableScissor(this.x + 5, y0, contentRight() - 5, y1);
                 if (selectionAnchor < caretIndex) {
                     graphics.fill(getXFromIndex(selectionAnchor), y0 - 1, getXFromIndex(caretIndex), y1 + 1, ModColors.WHITE.color);
                     String selectedSubstring = text.substring(selectionAnchor, caretIndex);
