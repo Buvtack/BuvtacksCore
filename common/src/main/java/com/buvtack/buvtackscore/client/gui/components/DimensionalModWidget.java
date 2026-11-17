@@ -258,4 +258,12 @@ public abstract class DimensionalModWidget extends ModWidget {
     public boolean pressed() {
         return hovered() && ClientModHelper.isLeftClicking();
     }
+
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+
+    public boolean focused() {
+        return focused;
+    }
 }

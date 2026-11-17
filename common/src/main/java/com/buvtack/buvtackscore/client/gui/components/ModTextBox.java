@@ -65,7 +65,7 @@ public class ModTextBox extends DimensionalModWidget {
                 }
                 else {
                     graphics.fill(getXFromIndex(caretIndex), y0 - 1, getXFromIndex(selectionAnchor), y1 + 1, ModColors.WHITE.color);
-                    String selectedSubstring = text.substring(caretIndex, selectionAnchor);
+                    String selectedSubstring = text.substring(caretIndex, Math.min(text.length(), selectionAnchor));
                     graphics.text(ClientModHelper.font(), selectedSubstring, getXFromIndex(caretIndex), y0, ModColors.BLUE.darken(0.2F).color, false);
                 }
                 graphics.disableScissor();
@@ -138,6 +138,9 @@ public class ModTextBox extends DimensionalModWidget {
                     }
                 }
             }
+
+            if (!ClientModHelper.isShiftPressed())
+                selectionAnchor = caretIndex;
         }
     }
 
@@ -356,5 +359,27 @@ public class ModTextBox extends DimensionalModWidget {
 
     public void setTextColor(ModColor color) {
         textColor = color;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setX(int x) {
+        int prevX = this.x;
+        int gap = x - prevX;
+        caret.setX(caret.x + gap);
+
+        super.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        int prevY = this.y;
+        int gap = y - prevY;
+        caret.setY(caret.y + gap);
+
+        super.setY(y);
     }
 }

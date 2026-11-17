@@ -34,7 +34,7 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
         renderTasks.removeTask(DefaultTaskNames.renderVanillaWidgets);
         renderTasks.removeTask(DefaultTaskNames.renderModWidgets);
         renderTasks.addTask(DefaultTaskNames.renderModWidgets, new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
-            int entryX = this.x + innerMargin;
+            int entryX = this.x + innerMargin + (alignment == Alignment.LEFT && bar != null ? bar.getMarginedWidth() + 5 : 0);
             int entryY = this.y + innerMargin - offsetY;
             //Constants.LOG.info("entryY:" + entryY);
             graphics.enableScissor(contentLeft(), contentTop(), contentRight(), contentBottom());
@@ -172,6 +172,28 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
             focusedEntry = null;
 
         focusEntryOnClick = focus;
+    }
+
+    @Override
+    public void setX(int x) {
+        if (bar != null) {
+            int prevX = this.x;
+            int gap = x - prevX;
+            bar.setX(bar.x + gap);
+        }
+
+        super.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        if (bar != null) {
+            int prevY = this.y;
+            int gap = y - prevY;
+            bar.setY(bar.y + gap);
+        }
+
+        super.setY(y);
     }
 
     public static class Builder<T extends ModEntry> {

@@ -52,9 +52,9 @@ public class TestLibraryScreen extends ModScreen {
         //bar.setOuterHeight(300);
 
         ModEntryListBuilder<ModEntry> testListBuilder = new ModEntryListBuilder<>();
-        testListBuilder.bar(listBar.build(), Alignment.RIGHT);
+        testListBuilder.bar(listBar.build(), Alignment.LEFT);
         testListBuilder.gap(3);
-        testListBuilder.innerMargin(10);
+        testListBuilder.innerMargin(0);
         testListBuilder.focusEntryOnClick(true);
         testListBuilder.bounds(width / 2 - 100, 40, 200, height - 80);
         testListBuilder.entries(List.of(
@@ -81,11 +81,11 @@ public class TestLibraryScreen extends ModScreen {
                 () -> entry(ModColors.VANILLA_BLUE.darken(1.0F).blueify(1.0F))
         ));
         entryList = testListBuilder.build();
-        modWidgets.add(entryList);
+        //modWidgets.add(entryList);
 
         ModTextBoxBuilder textBoxBuilder = new ModTextBoxBuilder();
         textBoxBuilder.textColor(ModColors.VANILLA_GREEN);
-        textBoxBuilder.bounds(10, height / 2 - 15, 120, 30)
+        textBoxBuilder.bounds(100, 10, 120, 20)
                 .background(ModColors.DARKER)
                 .focused(ModColors.VANILLA_BLACK)
                 .border(ModColors.VANILLA_DARK_GRAY)
@@ -97,7 +97,19 @@ public class TestLibraryScreen extends ModScreen {
             else
                 textBox.setTextColor(ModColors.WHITE);
         }));
-        modWidgets.add(textBox);
+        //modWidgets.add(textBox);
+
+        ModPanelBuilder panelBuilder = new ModPanelBuilder();
+        panelBuilder.bounds(10, height / 2 - 15, 140, 40);
+        ModPanel panel = panelBuilder.build();
+        panel.addModWidgets(List.of(() -> textBox));
+        panel.addModWidgets(List.of(()  -> entryList));
+        modWidgets.add(panel);
+
+//        textBox.tickTasks.addTask("printText", new ModTask<>(() -> {
+//            //if ((Instant.now().getEpochSecond() / 500) % 2 == 0)
+//                Constants.LOG.info(textBox.getText());
+//        }));
     }
 
     private int number = 0;
@@ -109,13 +121,13 @@ public class TestLibraryScreen extends ModScreen {
         builder.hover(ModColors.VANILLA_DARK_RED, 2, 1.0F);
         builder.focused(ModColors.VANILLA_GOLD);
         builder.modWidgets(List.of(() -> {
-                ModLabelBuilder labelBuilder = new ModLabelBuilder();
-                labelBuilder.coords(75, 15 - ClientModHelper.font().lineHeight / 2);
-                labelBuilder.content(Component.literal("Entry Text " + number++));
-                labelBuilder.alignment(Alignment.CENTER);
-                return labelBuilder.build();
-                }
-            )
+                            ModLabelBuilder labelBuilder = new ModLabelBuilder();
+                            labelBuilder.coords(75, 15 - ClientModHelper.font().lineHeight / 2);
+                            labelBuilder.content(Component.literal("Entry Text " + number++));
+                            labelBuilder.alignment(Alignment.CENTER);
+                            return labelBuilder.build();
+                        }
+                )
         );
         return builder.build();
     }
