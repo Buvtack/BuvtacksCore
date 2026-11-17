@@ -38,7 +38,7 @@ public class ModTextBox extends DimensionalModWidget {
         text = "";
         textColor = ModColors.WHITE;
         ModPanelBuilder caretBuilder = new ModPanelBuilder();
-        caretBuilder.bounds(x + 5, centerY() - ClientModHelper.font().lineHeight / 2 - 1, 1, ClientModHelper.font().lineHeight + 2);
+        caretBuilder.bounds(this.x + 5, centerY() - ClientModHelper.font().lineHeight / 2 - 1, 1, ClientModHelper.font().lineHeight + 2);
         caret = caretBuilder.build();
         caretIndex = 0;
         selectionAnchor = 0;
@@ -69,7 +69,7 @@ public class ModTextBox extends DimensionalModWidget {
                 }
                 else {
                     graphics.fill(getXFromIndex(caretIndex), y0 - 1, getXFromIndex(selectionAnchor), y1 + 1, ModColors.WHITE.color);
-                    String selectedSubstring = text.substring(caretIndex, selectionAnchor);
+                    String selectedSubstring = text.substring(caretIndex, Math.min(text.length(), selectionAnchor));
                     graphics.text(ClientModHelper.font(), selectedSubstring, getXFromIndex(caretIndex), y0, ModColors.BLUE.darken(0.2F).color, false);
                 }
                 graphics.disableScissor();
@@ -130,7 +130,6 @@ public class ModTextBox extends DimensionalModWidget {
 
     private void moveCaret() {
         if (pressed() && focused) {
-            Constants.LOG.info("Moving Caret");
             if (ClientModHelper.mouseX() - x - 5 >= ClientModHelper.font().width(text))
                 caretIndex = text.length() + 1;
             else {
@@ -142,6 +141,8 @@ public class ModTextBox extends DimensionalModWidget {
                     }
                 }
             }
+
+            selectionAnchor = caretIndex;
         }
     }
 
@@ -243,9 +244,6 @@ public class ModTextBox extends DimensionalModWidget {
 
         if (!ClientModHelper.isShiftPressed())
             selectionAnchor = caretIndex;
-        else {
-            Constants.LOG.info("Didn't move selection anchor");
-        }
     }
 
     private void moveLeft() {
@@ -294,9 +292,6 @@ public class ModTextBox extends DimensionalModWidget {
 
         if (!ClientModHelper.isShiftPressed())
             selectionAnchor = caretIndex;
-        else {
-            Constants.LOG.info("Didn't move selection anchor");
-        }
     }
 
     private void skipToEnd() {
@@ -363,5 +358,23 @@ public class ModTextBox extends DimensionalModWidget {
 
     public String getText() {
         return text;
+    }
+
+    @Override
+    public void setX(int x) {
+        int prevX = this.x;
+        int gap = x - prevX;
+        caret.setX(caret.x + gap);
+
+        super.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        int prevY = this.y;
+        int gap = y - prevY;
+        caret.setY(caret.y + gap);
+
+        super.setY(y);
     }
 }

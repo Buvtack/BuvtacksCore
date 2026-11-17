@@ -1,5 +1,6 @@
 package com.buvtack.buvtackscore.client.gui.builders;
 
+import com.buvtack.buvtackscore.Constants;
 import com.buvtack.buvtackscore.client.gui.Alignment;
 import com.buvtack.buvtackscore.client.gui.components.ModEntry;
 import com.buvtack.buvtackscore.client.gui.components.ModEntryList;
@@ -52,6 +53,7 @@ public class ModEntryListBuilder<T extends ModEntry> extends DimensionalModWidge
         buildDimensionalWidget(list);
         list.addEntries(entries);
         list.setGap(gap);
+        list.setInnerMargin(innerMargin);
         list.setBar(bar, alignment);
         list.setFocusEntryOnClick(focusEntryOnClick);
         return list;

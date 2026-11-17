@@ -26,9 +26,6 @@ public class Builder {
 
     public Builder modWidgets(List<Supplier<? extends ModWidget>> widgets) {
         modWidgets = widgets;
-        Constants.LOG.info("Called modWidgets(List<Supplier<? extends ModWidget>>)");
-        Constants.LOG.info("widgets parameter: " + widgets);
-        Constants.LOG.info("modWidgets: " + modWidgets);
         return this;
     }
 
@@ -46,7 +43,6 @@ public class Builder {
         widget.setX(x);
         widget.setY(y);
         widget.setMargin(margin);
-        Constants.LOG.info("Building widget, modWidgets: " + modWidgets);
         widget.addModWidgets(modWidgets);
         widget.addVanillaWidgets(vanillaWidgets);
     }
