@@ -142,7 +142,8 @@ public class ModTextBox extends DimensionalModWidget {
                 }
             }
 
-            selectionAnchor = caretIndex;
+            if (!ClientModHelper.isShiftPressed())
+                selectionAnchor = caretIndex;
         }
     }
 
