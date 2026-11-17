@@ -34,7 +34,6 @@ public class ModEntryList<T extends ModEntry> extends ModPanel {
         renderTasks.removeTask(DefaultTaskNames.renderVanillaWidgets);
         renderTasks.removeTask(DefaultTaskNames.renderModWidgets);
         renderTasks.addTask(DefaultTaskNames.renderModWidgets, new ModTask<>(DefaultTaskPriorities.CONTENT, (graphics, mouseX, mouseY, partialTick) -> {
-            Constants.LOG.info("Inner Margin: " + innerMargin);
             int entryX = this.x + innerMargin + (alignment == Alignment.LEFT && bar != null ? bar.getMarginedWidth() + 5 : 0);
             int entryY = this.y + innerMargin - offsetY;
             //Constants.LOG.info("entryY:" + entryY);
