@@ -160,6 +160,9 @@ public class ModTextBox extends DimensionalModWidget {
                     task.action.tick();
             }
         }
+
+        ClientModHelper.resetInputChar();
+        ClientModHelper.resetKeyPressed();
     }
 
     private void typeChar() {
